@@ -34,8 +34,9 @@ public:
       // skip if full
       if (m_Buffer.size() < c_buffer_size) {
         m_Buffer.push(p_char);
-        m_BufferMutex.unlock();
+
       }
+      m_BufferMutex.unlock();
     }
   }
 };
@@ -77,6 +78,13 @@ public:
   virtual void process() {
     // this->process();
     std::cout << " ReaderJob processed" << std::endl;
+    // open file
+    // setbuffer readyforread
+    // until !eof
+    // read ch
+    // send ch to buffer
+    // if error exit
+    // set buffer endreading
   }
 
 };
@@ -91,6 +99,11 @@ public:
 
   virtual void process() {
     // this->process();
+    // open file
+    // while readyforread && !endreading
+    // get ch from buffer
+    // save ch
+    // if error exit
     std::cout << " WriterJob processed" << std::endl;
   }
 
@@ -107,7 +120,7 @@ int main(const int argc, const char* argv[])
   const std::string out_filename{ argv[2] };
 
   std::cout << "Input: " << in_filename << ", Output: " << out_filename << std::endl;
-  
+
   if (in_filename == out_filename) {
     std::cout << " Different filenames expected" << std::endl;
     return 1;
@@ -115,13 +128,13 @@ int main(const int argc, const char* argv[])
 
   std::shared_ptr<SharedBuffer> ipc_buffer = std::make_shared<SharedBuffer>();
 
-  ReaderJob reader{in_filename, ipc_buffer};
-  WriterJob writer{out_filename, ipc_buffer};
+  ReaderJob reader{ in_filename, ipc_buffer };
+  WriterJob writer{ out_filename, ipc_buffer };
 
   std::thread readerThread(&FileJob::process, &reader);
   std::thread writerThread(&FileJob::process, &writer);
 
-  // Main thread waits for 't' to finish
+
   readerThread.join();
   writerThread.join();
 
