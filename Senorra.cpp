@@ -77,6 +77,13 @@ public:
   virtual void process() {
     // this->process();
     std::cout << " ReaderJob processed" << std::endl;
+    // open file
+    // setbuffer readyforread
+    // until !eof
+    // read ch
+    // send ch to buffer
+    // if error exit
+    // set buffer endreading
   }
 
 };
@@ -91,6 +98,11 @@ public:
 
   virtual void process() {
     // this->process();
+    // open file
+    // while readyforread && !endreading
+    // get ch from buffer
+    // save ch
+    // if error exit
     std::cout << " WriterJob processed" << std::endl;
   }
 
@@ -121,7 +133,7 @@ int main(const int argc, const char* argv[])
   std::thread readerThread(&FileJob::process, &reader);
   std::thread writerThread(&FileJob::process, &writer);
 
-  // Main thread waits for 't' to finish
+
   readerThread.join();
   writerThread.join();
 
