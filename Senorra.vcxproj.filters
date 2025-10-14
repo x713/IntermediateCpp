@@ -13,10 +13,36 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\util">
+      <UniqueIdentifier>{7b944f8c-3874-4859-9bd0-51ed4f452388}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\DataStream">
+      <UniqueIdentifier>{ba2994ca-7008-49fc-adbf-5bcd4cab54a8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Senorra.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CLIProcessor.cpp">
+      <Filter>Header Files\util</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ComTypes.h">
+      <Filter>Header Files\util</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>Header Files\util</Filter>
+    </ClInclude>
+    <ClInclude Include="CLIProcessor.h">
+      <Filter>Header Files\util</Filter>
+    </ClInclude>
+    <ClInclude Include="CLIState.h">
+      <Filter>Header Files\util</Filter>
+    </ClInclude>
+    <ClInclude Include="IDataStream.h">
+      <Filter>Header Files\DataStream</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

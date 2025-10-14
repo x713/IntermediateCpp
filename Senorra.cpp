@@ -8,7 +8,13 @@
 #include <mutex>
 #include <thread>
 
+#include    "CLIProcessor.h"
+#include    "ComTypes.h"
+#include    "Utils.h"
 
+
+
+using lab::util::Utils;
 //
 //
 //
@@ -109,8 +115,65 @@ public:
 
 };
 
+using lab::util::CLI_Vector;
+using lab::util::CLIState;
+using lab::util::CLIState_toInt;
+using lab::util::CLIProcessor;
+using lab::util::CLICommandTestFAIL;
+using lab::util::CLICommandTestPASS;
+
+CLIState CLITEST() {
+
+  CLI_Vector params{ "test2", "subproc2", "flag1" };
+
+  CLIProcessor cmdProc(params);
+
+  cmdProc.AddCommand("subproc1", CLICommandTestFAIL);
+  cmdProc.AddCommand("subproc2", CLICommandTestPASS);
+  cmdProc.AddCommand("test2", CLICommandTestPASS);
+
+  return cmdProc.Run();
+}
+
+CLIState CLICommandSendStatus(CLI_Vector args) {
+  Utils::Log(" CLICommandSendStatus called ");
+  return CLIState::OK;
+}
+
+CLIState CLICommandSend(CLI_Vector args) {
+  CLIProcessor subcmd_proc(args);
+  subcmd_proc.AddCommand("status", CLICommandSendStatus);
+  subcmd_proc.AddCommand("pick", CLICommandSendStatus);
+  subcmd_proc.AddCommand("send", CLICommandSendStatus);
+  subcmd_proc.AddCommand("run", CLICommandSendStatus);
+
+  auto result = subcmd_proc.Run();
+
+  Utils::LogDebug(CLIState_toInt(result));
+
+  return result;
+
+}
+
+CLIState CLIRUN(const int argc, const char* argv[]) {
+
+  CLIProcessor cmdProc(argc, argv);
+
+  //cmdProc.AddCommand("send", CLICommandSend);
+  //cmdProc.AddCommand("recv", CLICommandRecv);
+
+  return cmdProc.Run();
+}
+
 int main(const int argc, const char* argv[])
 {
+  CLITEST();
+  CLIRUN(argc, argv);
+
+  //return 0;
+
+
+
   if (argc != 3) {
     std::cout << " Two filenames expected" << std::endl;
     return 1;
@@ -139,6 +202,8 @@ int main(const int argc, const char* argv[])
   writerThread.join();
 
   std::cout << "Main thread finished.";
+
+
 
 
   return 0;
