@@ -16,33 +16,63 @@
     <Filter Include="Header Files\util">
       <UniqueIdentifier>{7b944f8c-3874-4859-9bd0-51ed4f452388}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\DataStream">
-      <UniqueIdentifier>{ba2994ca-7008-49fc-adbf-5bcd4cab54a8}</UniqueIdentifier>
+    <Filter Include="Header Files\app">
+      <UniqueIdentifier>{597b5c16-8e2c-4082-9efa-25958c65c44b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\app\cmds">
+      <UniqueIdentifier>{4608bbd1-25e8-43ff-9987-6ec098f54db9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\shared">
+      <UniqueIdentifier>{ab9516af-1c94-4c84-8502-577949dd1899}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\shared\buffer">
+      <UniqueIdentifier>{e8291453-e356-43e0-a6fb-ed0d1a4b6bf1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\shared\cli_processor">
+      <UniqueIdentifier>{8e966782-dfa6-49d4-90a1-bca3242340de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\shared\cli_processor\doc">
+      <UniqueIdentifier>{7680bfb4-5490-46e8-9508-a8d2757e56a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\shared\workers">
+      <UniqueIdentifier>{1aabb646-78fb-4622-b339-2652d0fb92ec}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Senorra.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CLIProcessor.cpp">
-      <Filter>Header Files\util</Filter>
+    <ClCompile Include="shared\cli_processor\CLIProcessor.cpp">
+      <Filter>Header Files\shared\cli_processor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ComTypes.h">
-      <Filter>Header Files\util</Filter>
+    <ClInclude Include="app\cmds\MainCommand.h">
+      <Filter>Header Files\app\cmds</Filter>
     </ClInclude>
-    <ClInclude Include="Utils.h">
-      <Filter>Header Files\util</Filter>
+    <ClInclude Include="shared\buffer\SharedBuffer.h">
+      <Filter>Header Files\shared\buffer</Filter>
     </ClInclude>
-    <ClInclude Include="CLIProcessor.h">
-      <Filter>Header Files\util</Filter>
+    <ClInclude Include="shared\buffer\IDataStream.h">
+      <Filter>Header Files\shared\buffer</Filter>
     </ClInclude>
-    <ClInclude Include="CLIState.h">
-      <Filter>Header Files\util</Filter>
+    <ClInclude Include="shared\cli_processor\docs\CLIExamples.h">
+      <Filter>Header Files\shared\cli_processor\doc</Filter>
     </ClInclude>
-    <ClInclude Include="IDataStream.h">
-      <Filter>Header Files\DataStream</Filter>
+    <ClInclude Include="shared\cli_processor\CLIState.h">
+      <Filter>Header Files\shared\cli_processor</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\cli_processor\CLIProcessor.h">
+      <Filter>Header Files\shared\cli_processor</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\cli_processor\ComTypes.h">
+      <Filter>Header Files\shared\cli_processor</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\workers\JobWorker.h">
+      <Filter>Header Files\shared\workers</Filter>
+    </ClInclude>
+    <ClInclude Include="util\Utils.h">
+      <Filter>Header Files\util</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

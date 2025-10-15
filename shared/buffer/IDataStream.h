@@ -9,9 +9,9 @@ namespace data{
     
     IData m_data;
 
-    // receiving data
+    // is receiving data
     bool m_rx{false};
-
+    // is sendind data
     bool m_tx{false};
 
   public:
