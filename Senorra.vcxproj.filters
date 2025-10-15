@@ -16,8 +16,26 @@
     <Filter Include="Header Files\util">
       <UniqueIdentifier>{7b944f8c-3874-4859-9bd0-51ed4f452388}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\DataStream">
-      <UniqueIdentifier>{ba2994ca-7008-49fc-adbf-5bcd4cab54a8}</UniqueIdentifier>
+    <Filter Include="Header Files\app">
+      <UniqueIdentifier>{597b5c16-8e2c-4082-9efa-25958c65c44b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\domain">
+      <UniqueIdentifier>{ab9516af-1c94-4c84-8502-577949dd1899}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\domain\buffer">
+      <UniqueIdentifier>{e8291453-e356-43e0-a6fb-ed0d1a4b6bf1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\domain\cli_processor">
+      <UniqueIdentifier>{8e966782-dfa6-49d4-90a1-bca3242340de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\domain\workers">
+      <UniqueIdentifier>{1aabb646-78fb-4622-b339-2652d0fb92ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\domain\cli_processor\doc">
+      <UniqueIdentifier>{7680bfb4-5490-46e8-9508-a8d2757e56a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\app\cmds">
+      <UniqueIdentifier>{4608bbd1-25e8-43ff-9987-6ec098f54db9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -25,24 +43,36 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CLIProcessor.cpp">
-      <Filter>Header Files\util</Filter>
+      <Filter>Header Files\domain\cli_processor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ComTypes.h">
-      <Filter>Header Files\util</Filter>
-    </ClInclude>
     <ClInclude Include="Utils.h">
       <Filter>Header Files\util</Filter>
     </ClInclude>
+    <ClInclude Include="IDataStream.h">
+      <Filter>Header Files\domain\buffer</Filter>
+    </ClInclude>
     <ClInclude Include="CLIProcessor.h">
-      <Filter>Header Files\util</Filter>
+      <Filter>Header Files\domain\cli_processor</Filter>
     </ClInclude>
     <ClInclude Include="CLIState.h">
-      <Filter>Header Files\util</Filter>
+      <Filter>Header Files\domain\cli_processor</Filter>
     </ClInclude>
-    <ClInclude Include="IDataStream.h">
-      <Filter>Header Files\DataStream</Filter>
+    <ClInclude Include="ComTypes.h">
+      <Filter>Header Files\domain</Filter>
+    </ClInclude>
+    <ClInclude Include="SharedBuffer.h">
+      <Filter>Header Files\domain\buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="JobWorker.h">
+      <Filter>Header Files\domain\workers</Filter>
+    </ClInclude>
+    <ClInclude Include="CLIExamples.h">
+      <Filter>Header Files\domain\cli_processor\doc</Filter>
+    </ClInclude>
+    <ClInclude Include="MainCommand.h">
+      <Filter>Header Files\app\cmds</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

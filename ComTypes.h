@@ -9,9 +9,12 @@
 #include "CLIState.h"
 
 namespace lab {
-  namespace util {
+  namespace cli {
+
+    using lab::cli::CLIState;
 
     using CLI_String = std::string;
+
     using CLI_Vector = std::vector<CLI_String>;
     using CLI_Pair = std::pair<CLI_String, CLI_String>;
     using CLI_Map = std::map<CLI_String, CLI_String>;
@@ -19,8 +22,9 @@ namespace lab {
 
 
     //using CLI_Command = CLIState (*)(CLI_Vector);
-    using CLI_Command = std::function<CLIState(CLI_Vector)>;
-    using CLI_CommandMap = std::map< CLI_String, CLI_Command>;
+
+    using CLI_Command = std::function< CLIState::State (CLI_Vector) >;
+    using CLI_CommandMap = std::map< CLI_String, CLI_Command >;
 
   }
 }

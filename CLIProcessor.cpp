@@ -10,7 +10,11 @@
 
 
 namespace lab {
-  namespace util {
+  namespace cli {
+
+    using lab::util::Utils;
+    using lab::cli::CLIState;
+
     CLIProcessor::CLIProcessor(const int argc, const char** argv) {
       m_args = std::vector<CLI_String>(argv, argv + argc);
       ParseArgs();
@@ -23,6 +27,14 @@ namespace lab {
     // Add command to map
     void CLIProcessor::AddCommand(const CLI_String p_cmdName, const CLI_Command p_cmdPtr) {
       m_commands[p_cmdName] = p_cmdPtr;
+    }
+
+    // Add command to map
+    void CLIProcessor::AddCommand(const CLI_String p_cmdName, const CLI_Command p_cmdPtr, const CLI_String p_descrStr) {
+      if (!p_descrStr.empty()) {
+        m_descrc[p_cmdName] = p_descrStr;
+      }
+      AddCommand(p_cmdName, p_cmdPtr);
     }
 
     CLI_String CLIProcessor::GetNextCommand() {
@@ -58,16 +70,17 @@ namespace lab {
     }
 
     // Run processor task, ParseFlags, evaluate chosen commmand and execute it.
-    CLIState CLIProcessor::Run() {
+    CLIState::State CLIProcessor::Run() {
 
       // Pop cmd
       auto cmd_name = GetNextCommand();
 
-      CLIState result = CLIState::ERR;
+      CLIState::State result = CLIState::State::ERR;
 
       if (!cmd_name.empty()) {
+
         // evaluate and execute command
-        if (m_commands.find(cmd_name) != m_commands.end()) { 
+        if (m_commands.find(cmd_name) != m_commands.end()) {
 
           try {
             return m_commands[cmd_name](m_parsedArgs);
@@ -75,16 +88,18 @@ namespace lab {
           catch (const std::exception& /*e*/) {
             // Optional: Log the exception message (e.what())
             // Utils::Log("Exception: ", e.what());
-            return CLIState::ERR_NOT_FOUND;;
+            Utils::LogDebug("CLIProcessor m_commands map failure");
+            return CLIState::State::ERR_NOT_FOUND;;
           }
 
 
-        }else{
+        }
+        else {
           Utils::Log("CLIProcessor:", ' ');
           Utils::Log("Error:", ' ');
-          Utils::Log("Command not found", ' ');
-          Utils::Log(cmd_name);
-          result = CLIState::ERR_NOT_FOUND;
+          Utils::Log("Command not found ", '\'');
+          Utils::Log(cmd_name + "'");
+          result = CLIState::State::ERR_NOT_FOUND;
         }
 
 
@@ -92,24 +107,22 @@ namespace lab {
       else {
         Utils::Log("CLIProcessor:", ' ');
         Utils::Log("Error:", ' ');
-        Utils::Log("Empty command", ' ');
-        Utils::Log(cmd_name);
-        result = CLIState::ERR_EMPTY_COMMAND;
+        Utils::Log("Empty command ", '\'');
+        Utils::Log(cmd_name + "'");
+        result = CLIState::State::ERR_EMPTY_COMMAND;
       }
 
+      if (CLIState::isOK(result)) {
+        PrintHelp();
+      }
 
-       return result;
+      return result;
     }
 
-    CLIState CLICommandTestPASS(CLI_Vector args) {
-      Utils::Log("CLICommandTestPASS");
-      return CLIState::OK;
+    void CLIProcessor::PrintHelp() {
+      Utils::LogDebug("Help not defined");
     }
 
-    CLIState CLICommandTestFAIL(CLI_Vector args) {
-      Utils::Log("CLICommandTestFAIL");
-      return CLIState::ERR;
-    }
 
   }
 }

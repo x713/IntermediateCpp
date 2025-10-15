@@ -127,9 +127,13 @@
     <ClCompile Include="Senorra.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CLIExamples.h" />
     <ClInclude Include="CLIProcessor.h" />
     <ClInclude Include="CLIState.h" />
     <ClInclude Include="IDataStream.h" />
+    <ClInclude Include="JobWorker.h" />
+    <ClInclude Include="MainCommand.h" />
+    <ClInclude Include="SharedBuffer.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="ComTypes.h" />
   </ItemGroup>
