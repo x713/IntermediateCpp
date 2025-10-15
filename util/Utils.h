@@ -6,6 +6,8 @@
 namespace lab {
   namespace util {
 
+    using lab::cli::CLI_String;
+
     class Utils {
     public:
 
@@ -13,7 +15,7 @@ namespace lab {
       template<class T>
       static inline void LogDebug(T p_str, const char p_endl = '\n') {
 #ifdef _DEBUG
-        Log(p_str, p_endl);
+        Log(p_str, p_endl);          
 #endif
       }
 
