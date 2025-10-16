@@ -12,7 +12,8 @@ using lab::cli::CLIState;
 using lab::cli::CLI_Vector;
 using lab::cli::CLI_Command;
 
-using lab::data::SharedBuffer;
+using lab::data::IBuffer;
+using lab::data::TrippleBuffer;
 
 using lab::worker::FileJob;
 using lab::worker::ReaderJob;
@@ -36,7 +37,8 @@ CLIState::State MainCommand(CLI_Vector args)
     return CLIState::State::ERR_FMT_COMMAND;
   }
 
-  std::shared_ptr<SharedBuffer> ipc_buffer = std::make_shared<SharedBuffer>();
+  //std::shared_ptr<IBuffer> ipc_buffer = std::make_shared<IBuffer>();
+  std::shared_ptr<IBuffer> ipc_buffer = std::make_shared<TrippleBuffer>();
 
   ReaderJob reader{ in_filename, ipc_buffer };
   WriterJob writer{ out_filename, ipc_buffer };
