@@ -8,11 +8,16 @@
 #include <string>
 #include <iostream> 
 
+#include "../../util/Utils.h"
+
+
 //
 //
 //
 namespace lab {
   namespace data {
+
+    using lab::util::Utils;
 
     class IBuffer {
     public:
@@ -21,7 +26,7 @@ namespace lab {
     };
 
 
-    class LineBuffer{
+    class LineBuffer {
 
       static constexpr std::streamsize c_bufferSize = 256;
 
@@ -29,7 +34,7 @@ namespace lab {
 
       std::streamsize cacheBufferSize = 0;
     public:
-      void readLine(std::ifstream& p_istream)  {
+      void readLine(std::ifstream& p_istream) {
 
         p_istream.read(m_buffer.data(), c_bufferSize);
 
@@ -37,7 +42,8 @@ namespace lab {
         std::streamsize actual_read_count = p_istream.gcount();
         cacheBufferSize = actual_read_count;
 
-        std::cout << "EOF. Read bytes: " << actual_read_count << '\n';
+        Utils::Log("EOF. Read bytes:", ' ');
+        Utils::Log(actual_read_count);
 
       }
 

@@ -19,25 +19,26 @@ using lab::worker::FileJob;
 using lab::worker::ReaderJob;
 using lab::worker::WriterJob;
 
+using lab::util::Utils;
+
 
 CLIState::State MainCommand(CLI_Vector args)
 {
   if (args.size() != 2) {
-    std::cout << " Two filenames expected" << std::endl;
+    Utils::Log(" Two filenames expected");
     return CLIState::State::ERR_FMT_COMMAND;
   }
 
   const std::string in_filename{ args[0] };
   const std::string out_filename{ args[1] };
 
-  std::cout << "Input: " << in_filename << ", Output: " << out_filename << std::endl;
+  Utils::Log("Input: " + in_filename + ", Output: " + out_filename);
 
   if (in_filename == out_filename) {
-    std::cout << " Different filenames expected" << std::endl;
+    Utils::Log(" Different filenames expected");
     return CLIState::State::ERR_FMT_COMMAND;
   }
 
-  //std::shared_ptr<IBuffer> ipc_buffer = std::make_shared<IBuffer>();
   std::shared_ptr<IBuffer> ipc_buffer = std::make_shared<TrippleBuffer>();
 
   ReaderJob reader{ in_filename, ipc_buffer };
@@ -49,7 +50,7 @@ CLIState::State MainCommand(CLI_Vector args)
   readerThread.join();
   writerThread.join();
 
-  std::cout << "Main thread finished.";
+  Utils::Log("Main thread finished.");
 
   return CLIState::State::OK;
 }

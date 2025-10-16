@@ -9,6 +9,7 @@
 #include "../cli_processor/ComTypes.h"
 
 #include "../buffer/SharedBuffer.h"
+#include "../../util/Utils.h"
 
 
 namespace lab {
@@ -16,6 +17,9 @@ namespace lab {
 
     using lab::data::IBuffer;
     using lab::data::TrippleBuffer;
+
+    using lab::util::Utils;
+
     using std::ofstream;
 
     class FileJob {
@@ -30,7 +34,7 @@ namespace lab {
     public:
       FileJob(const std::string& p_filename,
         const std::shared_ptr<IBuffer>& ipc_buffer) {
-        std::cout << " FileJob ctor" << std::endl;
+        Utils::LogDebug(" FileJob ctor");
 
         m_inFilename = p_filename;
         m_buffer = ipc_buffer;
@@ -39,7 +43,7 @@ namespace lab {
       virtual ~FileJob() = default;
 
       virtual void process() {
-        std::cout << " FileJob processed" << std::endl;
+        Utils::LogDebug("FileJob processed");
       };
 
     };
@@ -52,16 +56,17 @@ namespace lab {
       // prepare a file to read
       double d = 3.14;
       std::ofstream(filename, std::ios::binary)
-        .write(reinterpret_cast<char*>(&d), sizeof d) << 123 << "abc"
-        << 123 << "abc"
-        << 123 << "abc"
-        << 123 << "abc"
-        << 123 << "abc"
-        << 123 << "abc"
-        << 123 << "abc"
-        << 123 << "abc"
-        << 123 << "abc"
-        << 123 << "abc";
+        .write(reinterpret_cast<char*>(&d), sizeof d)
+        << 1123 << "abc"
+        << 2123 << "abc"
+        << 3123 << "abc"
+        << 4123 << "abc"
+        << 5123 << "abc"
+        << 6123 << "abc"
+        << 7123 << "abc"
+        << 8123 << "abc"
+        << 9123 << "abc"
+        << 0123 << "abc";
 
     }
 
@@ -72,7 +77,7 @@ namespace lab {
       ReaderJob(const std::string& p_filename,
         const std::shared_ptr<IBuffer>& ipc_buffer)
         : FileJob(p_filename, ipc_buffer) {
-        std::cout << " ReaderJob ctor" << std::endl;
+        Utils::LogDebug(" ReaderJob ctor");
       }
 
       virtual void process() {
@@ -99,7 +104,7 @@ namespace lab {
         std::string filename = "Test.b";
         std::ifstream istrm(filename, std::ios::binary);
         if (!istrm.is_open()) {
-          std::cout << "failed to open " << filename << '\n';
+          Utils::Log("failed to open " + filename);
           return;
         }
 
@@ -108,13 +113,17 @@ namespace lab {
           m_buffer->readLine(istrm);
 
           if (istrm.eof()) {
-            // std::cout << "EOF. Read bytes: " << actual_read_count << '\n';
+            Utils::LogDebug("EOF. Read bytes:", ' ');
+            //Utils::LogDebug(actual_read_count);
+
             done = true;
             break;
           }
           else if (istrm.fail()) {
             // read less than 256, but not EOF
-            // std::cout << "Read failed, Read bytes: " << actual_read_count << '\n';
+            Utils::LogDebug("FAIL : Read less than 256, but not EOF", ' ');
+            //Utils::LogDebug(actual_read_count);
+
             done = true;
             break;
           }
