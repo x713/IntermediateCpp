@@ -14,7 +14,7 @@ int main(const int argc, const char* argv[])
                   "    --cp to copy files"
                   "    --ncp to copy files through network");
 
-  cmdProc.AddCommand("cp1", MainCommand);
+  cmdProc.AddCommand("cp", MainCommand);
   //cmdProc.AddCommand("ncp", NetworkCommand);
 
   int result = CLIState::toInt(cmdProc.Run());

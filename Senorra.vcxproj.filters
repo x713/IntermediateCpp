@@ -37,6 +37,9 @@
     <Filter Include="Header Files\shared\workers">
       <UniqueIdentifier>{1aabb646-78fb-4622-b339-2652d0fb92ec}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\shared\data">
+      <UniqueIdentifier>{94ba8ae1-c9be-4fa0-af98-79590f825cc3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Senorra.cpp">
@@ -73,6 +76,9 @@
     </ClInclude>
     <ClInclude Include="util\Utils.h">
       <Filter>Header Files\util</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\data\DataReader.h">
+      <Filter>Header Files\shared\data</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
