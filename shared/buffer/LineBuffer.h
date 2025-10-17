@@ -15,7 +15,7 @@ namespace lab {
     class LineBuffer {
 
 
-      static constexpr std::streamsize c_bufferSize = 4;//256;
+      static constexpr std::streamsize c_bufferSize = 16;//256;
 
       std::array<char, c_bufferSize> m_buffer{};
 
@@ -68,7 +68,9 @@ namespace lab {
       void PrintBuffer() {
 #ifdef _DEBUG
         for (const auto& el : m_buffer) {
-          Utils::Log(el, ' ');
+          if (std::isprint(el)) {
+            Utils::Log(el, ' ');
+          }
         }
         Utils::Log("");
 #endif // DEBUG
