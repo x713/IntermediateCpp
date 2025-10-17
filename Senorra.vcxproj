@@ -128,13 +128,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="app\cmds\MainCommand.h" />
-    <ClInclude Include="shared\buffer\IDataStream.h" />
-    <ClInclude Include="shared\buffer\SharedBuffer.h" />
+    <ClInclude Include="shared\buffer\LineBuffer.h" />
+    <ClInclude Include="shared\buffer\RingBuffer.h" />
+    <ClInclude Include="shared\buffer\IBuffer.h" />
     <ClInclude Include="shared\cli_processor\CLIProcessor.h" />
     <ClInclude Include="shared\cli_processor\CLIState.h" />
     <ClInclude Include="shared\cli_processor\ComTypes.h" />
     <ClInclude Include="shared\cli_processor\docs\CLIExamples.h" />
-    <ClInclude Include="shared\data\DataReader.h" />
     <ClInclude Include="shared\workers\JobWorker.h" />
     <ClInclude Include="util\Utils.h" />
   </ItemGroup>

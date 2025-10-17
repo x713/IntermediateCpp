@@ -8,7 +8,7 @@
 
 #include "../cli_processor/ComTypes.h"
 
-#include "../buffer/SharedBuffer.h"
+#include "../buffer/IBuffer.h"
 #include "../../util/Utils.h"
 
 
@@ -16,7 +16,7 @@ namespace lab {
   namespace worker {
 
     using lab::data::IBuffer;
-    using lab::data::TrippleBuffer;
+    using lab::data::IOStatus;
 
     using lab::util::Utils;
 
@@ -80,19 +80,8 @@ namespace lab {
         Utils::LogDebug(" ReaderJob ctor");
       }
 
-      virtual void process() {
-        // this->process();
-        // open file
-        // setbuffer readyforread
-        // until !eof
-        // read ch
-        // send ch to buffer
-        // if error exit
-        // set buffer endreading
+      void process() override {
 
-        //m_buffer
-
-        //m_inFilename
         makeTestData();
         // UART
         // RTS requesttosend
@@ -100,39 +89,49 @@ namespace lab {
         // TX 
 
         // open file for reading
-
         std::string filename = "Test.b";
         std::ifstream istrm(filename, std::ios::binary);
         if (!istrm.is_open()) {
           Utils::Log("failed to open " + filename);
           return;
         }
+        consume(istrm);
+        istrm.close();
 
-        bool done = false;
-        while (!done) {
-          m_buffer->readLine(istrm);
-
-          if (istrm.eof()) {
-            Utils::LogDebug("EOF. Read bytes:", ' ');
-            //Utils::LogDebug(actual_read_count);
-
-            done = true;
-            break;
-          }
-          else if (istrm.fail()) {
-            // read less than 256, but not EOF
-            Utils::LogDebug("FAIL : Read less than 256, but not EOF", ' ');
-            //Utils::LogDebug(actual_read_count);
-
-            done = true;
-            break;
-          }
-        }
-
-        std::cout << " ReaderJob processed" << std::endl;
-
+        Utils::Log(" ReaderJob processed");
       }
 
+
+      void consume(std::ifstream& p_ifstream) {
+        {
+          bool done = false;
+          while (!done) {
+            auto result = m_buffer->readLine(p_ifstream);
+
+            if (IOStatus::IORINGFULL == result) {
+              // TODO : wait?
+              continue;
+            }
+
+            if (IOStatus::IOEOF == result) {
+
+              done = true;
+              break;
+            }
+            else if (p_ifstream.fail()) {
+              // read less than 256, but not EOF
+              Utils::LogDebug("FAIL : Read less than 256, but not EOF", ' ');
+              //Utils::LogDebug(actual_read_count);
+
+              //done = true;
+              //break;
+            }
+          }
+
+
+
+        }
+      }
     };
 
     class WriterJob : public FileJob {
@@ -140,10 +139,10 @@ namespace lab {
       WriterJob(const std::string& p_filename,
         const std::shared_ptr<IBuffer>& ipc_buffer)
         : FileJob(p_filename, ipc_buffer) {
-        std::cout << " WriterJob ctor" << std::endl;
+        Utils::LogDebug(" WriterJob ctor");
       }
 
-      virtual void process() {
+      void process() override {
         // this->process();
         // open file
         // while readyforread && !endreading
@@ -151,8 +150,42 @@ namespace lab {
         // save ch
         // if error exit
 
-        std::cout << " WriterJob processed" << std::endl;
+        std::ofstream ofstr(m_inFilename, std::ios::binary);
+        if (!ofstr.is_open()) {
+          Utils::Log("Failed to open dest file");
+
+          return;
+        }
+
+        produce(ofstr);
+        ofstr.close();
+
+        Utils::Log(" WriterJob processed");
+
       }
+
+      void produce(std::ofstream& p_ofstream) {
+        {
+          bool done = false;
+          while (!done) {
+            IOStatus result = m_buffer->writeLine(p_ofstream);
+
+            if (IOStatus::IONEXTBUSY == result) {
+              // TODO : wait?
+              continue;
+            }
+
+            if (IOStatus::IOEOF == result) {
+
+              done = true;
+              break;
+            }            
+          }
+
+
+        }
+      }
+
 
     };
 

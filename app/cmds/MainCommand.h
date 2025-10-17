@@ -2,7 +2,8 @@
  
 #include "../../shared/cli_processor/ComTypes.h"
 
-#include "../../shared/buffer/SharedBuffer.h"
+#include "../../shared/buffer/IBuffer.h"
+#include "../../shared/buffer/RingBuffer.h"
 #include "../../shared/workers/JobWorker.h"
 
 #include "../../util/Utils.h"
@@ -12,8 +13,7 @@ using lab::cli::CLIState;
 using lab::cli::CLI_Vector;
 using lab::cli::CLI_Command;
 
-using lab::data::IBuffer;
-using lab::data::TrippleBuffer;
+using lab::data::RingBufferFactory;
 
 using lab::worker::FileJob;
 using lab::worker::ReaderJob;
@@ -39,7 +39,7 @@ CLIState::State MainCommand(CLI_Vector args)
     return CLIState::State::ERR_FMT_COMMAND;
   }
 
-  std::shared_ptr<IBuffer> ipc_buffer = std::make_shared<TrippleBuffer>();
+  auto ipc_buffer = RingBufferFactory::createSyncTrippleBuffer();
 
   ReaderJob reader{ in_filename, ipc_buffer };
   WriterJob writer{ out_filename, ipc_buffer };
