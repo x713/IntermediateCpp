@@ -10,9 +10,9 @@ int main(const int argc, const char* argv[])
   CLIProcessor cmdProc(argc, argv);
   cmdProc.TrimProgramName(argv[0]);
 
-  cmdProc.SetHelp("  multi tool \n"  
-                  "    --cp to copy files"
-                  "    --ncp to copy files through network");
+  cmdProc.SetHelp("  multi tool"  
+                  "\n    --cp to copy files"
+                  "\n    --ncp to copy files through network");
 
   cmdProc.AddCommand("cp", MainCommand);
   //cmdProc.AddCommand("ncp", NetworkCommand);
