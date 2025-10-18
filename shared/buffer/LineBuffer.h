@@ -30,8 +30,6 @@ namespace lab {
         std::streamsize actual_read_count = p_ifstream.gcount();
         cacheBufferSize = actual_read_count;
 
-        PrintBuffer();
-
         if (p_ifstream.eof()) {
           Utils::LogDebug("EOF. Read bytes:", ' ');
           Utils::LogDebug(actual_read_count);
@@ -46,6 +44,8 @@ namespace lab {
 
           return IOStatus::IOFAIL;
         }
+
+        PrintBuffer();
 
         return IOStatus::IOOK;
       }
@@ -67,9 +67,14 @@ namespace lab {
 
       void PrintBuffer() {
 #ifdef _DEBUG
-        for (const auto& el : m_buffer) {
-          if (std::isprint(el)) {
-            Utils::Log(el, ' ');
+        size_t bsize = cacheBufferSize < m_buffer.size() ? cacheBufferSize : m_buffer.size();
+        bsize = c_bufferSize < bsize ? bsize : c_bufferSize;
+
+        for (size_t i = 0; i < bsize - 1; ++i) {
+          unsigned char ch = static_cast<unsigned char>(m_buffer[i]);
+
+          if (ch && std::isprint(ch)) {
+            Utils::Log(m_buffer[i], ' ');
           }
         }
         Utils::Log("");

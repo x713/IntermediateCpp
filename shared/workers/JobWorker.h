@@ -57,6 +57,7 @@ namespace lab {
       double d = 3.14;
       std::ofstream(filename, std::ios::binary)
         .write(reinterpret_cast<char*>(&d), sizeof d)
+        << "opening string"
         << 1123 << "abc"
         << 2123 << "abc"
         << 3123 << "abc"
@@ -66,7 +67,8 @@ namespace lab {
         << 7123 << "abc"
         << 8123 << "abc"
         << 9123 << "abc"
-        << 0123 << "abc";
+        << 0123 << "abc"
+        << "Long 1long 2long 3long 4long closing string";
 
     }
 
