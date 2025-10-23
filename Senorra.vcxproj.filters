@@ -37,6 +37,12 @@
     <Filter Include="Header Files\shared\workers">
       <UniqueIdentifier>{1aabb646-78fb-4622-b339-2652d0fb92ec}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\shared\ipc">
+      <UniqueIdentifier>{8f74cf7c-6344-47b1-b3d8-cb53f7630165}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\shared\ipc\win">
+      <UniqueIdentifier>{be5ce761-3a2f-464c-95c1-dbd794725283}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Senorra.cpp">
@@ -76,6 +82,15 @@
     </ClInclude>
     <ClInclude Include="shared\buffer\LineBuffer.h">
       <Filter>Header Files\shared\buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\ipc\ipc_sfile.h">
+      <Filter>Header Files\shared\ipc</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\ipc\IpcWin.h">
+      <Filter>Header Files\shared\ipc\win</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\ipc\ipc_mutex.h">
+      <Filter>Header Files\shared\ipc</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -45,7 +45,7 @@ namespace lab {
           return IOStatus::IOFAIL;
         }
 
-        PrintBuffer();
+        //PrintBuffer();
 
         return IOStatus::IOOK;
       }
@@ -58,7 +58,7 @@ namespace lab {
           Utils::LogDebug("WARN : Write buffer 0 zise, skip writing");
         }
 
-        PrintBuffer();
+        //PrintBuffer();
       }
 
       void reset() {
@@ -67,7 +67,7 @@ namespace lab {
 
       void PrintBuffer() {
 #ifdef _DEBUG
-        size_t bsize = cacheBufferSize < m_buffer.size() ? cacheBufferSize : m_buffer.size();
+        size_t bsize = static_cast<size_t>(cacheBufferSize) < m_buffer.size() ? static_cast<size_t>(cacheBufferSize) : m_buffer.size();
         bsize = c_bufferSize < bsize ? bsize : c_bufferSize;
 
         for (size_t i = 0; i < bsize - 1; ++i) {

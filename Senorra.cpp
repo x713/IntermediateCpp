@@ -12,10 +12,12 @@ int main(const int argc, const char* argv[])
 
   cmdProc.SetHelp("  multi tool"  
                   "\n    --cp to copy files"
-                  "\n    --ncp to copy files through network");
+                  "\n    --tps to start copy server and broadcast file"
+                  "\n    --tpc to start copy client and receive file");
 
-  cmdProc.AddCommand("cp", MainCommand);
-  //cmdProc.AddCommand("ncp", NetworkCommand);
+  cmdProc.AddCommand("cp", CopyCommand);
+  cmdProc.AddCommand("tpc", SharedClientCommand);
+  cmdProc.AddCommand("tps", SharedServerCommand);
 
   int result = CLIState::toInt(cmdProc.Run());
 

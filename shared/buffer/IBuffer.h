@@ -20,6 +20,7 @@ namespace lab {
 
       virtual IOStatus writeLine(std::ofstream& p_ostream) abstract;
       virtual IOStatus readLine(std::ifstream& p_istream) = 0;
+      virtual void close() = 0;
     };
 
 
