@@ -135,6 +135,9 @@
     <ClInclude Include="shared\cli_processor\CLIState.h" />
     <ClInclude Include="shared\cli_processor\ComTypes.h" />
     <ClInclude Include="shared\cli_processor\docs\CLIExamples.h" />
+    <ClInclude Include="shared\ipc\IpcWin.h" />
+    <ClInclude Include="shared\ipc\ipc_mutex.h" />
+    <ClInclude Include="shared\ipc\ipc_sfile.h" />
     <ClInclude Include="shared\workers\JobWorker.h" />
     <ClInclude Include="util\Utils.h" />
   </ItemGroup>

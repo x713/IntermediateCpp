@@ -84,17 +84,12 @@ namespace lab {
 
       void process() override {
 
-        makeTestData();
-        // UART
-        // RTS requesttosend
-        // DTS dataterminalready
-        // TX 
-
         // open file for reading
-        std::string filename = "Test.b";
-        std::ifstream istrm(filename, std::ios::binary);
+        std::ifstream istrm(m_inFilename, std::ios::binary);
         if (!istrm.is_open()) {
-          Utils::Log("failed to open " + filename);
+          Utils::Log("failed to open " + m_inFilename);
+          m_buffer->close();
+          istrm.close();
           return;
         }
         consume(istrm);
@@ -141,12 +136,6 @@ namespace lab {
       }
 
       void process() override {
-        // this->process();
-        // open file
-        // while readyforread && !endreading
-        // get ch from buffer
-        // save ch
-        // if error exit
 
         std::ofstream ofstr(m_inFilename, std::ios::binary);
         if (!ofstr.is_open()) {
