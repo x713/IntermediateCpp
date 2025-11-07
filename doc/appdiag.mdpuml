@@ -1,0 +1,42 @@
+@startuml
+skinparam style strict
+
+' Classes declartion
+class CLIProcessor {
+  + CLIProcessor(argc: const int, argv: const char*)
+  + TrimProgramName(programName: const char*)
+  + SetHelp(helpText: const std::string&)
+  + AddCommand(name: const std::string&, command)
+  + Run(): CLIState
+}
+
+enum CLIState {
+  Success
+  Failure
+  UnknownCommand
+  + toInt(state: CLIState): int {static}
+}
+
+class MainCommand
+class CopyCommand
+class SharedClientCommand
+class SharedServerCommand
+
+
+' Relationships (dependency)
+CLIProcessor ..> CLIState : <<uses>>
+CLIProcessor "1" *-- "many" MainCommand : <<contains/ manages>>
+
+' Dependencies from CLIProcessor (through AddCommand)
+CLIProcessor ..> CopyCommand
+CLIProcessor ..> SharedClientCommand
+CLIProcessor ..> SharedServerCommand
+
+' Used namespaces and functions
+namespace lab::cli {
+  CLIProcessor
+  CLIState
+}
+
+footer main.cpp diag draft
+@enduml

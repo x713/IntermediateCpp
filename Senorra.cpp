@@ -19,8 +19,16 @@ int main(const int argc, const char* argv[])
   cmdProc.AddCommand("tpc", SharedClientCommand);
   cmdProc.AddCommand("tps", SharedServerCommand);
 
-  int result = CLIState::toInt(cmdProc.Run());
+  auto result = cmdProc.Run();
 
-  return result;
+  return CLIState::toInt(result);
 }
 
+/*
+*   // Source -> Sink
+    
+    SOLID
+
+
+* 
+*/

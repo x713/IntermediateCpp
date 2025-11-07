@@ -2,7 +2,7 @@
  
 #include "../../shared/cli_processor/ComTypes.h"
 
-#include "../../shared/buffer/IBuffer.h"
+#include "../../shared/buffer/IProcessor.h"
 #include "../../shared/buffer/RingBuffer.h"
 #include "../../shared/workers/JobWorker.h"
 
@@ -79,7 +79,6 @@ CLIState::State SharedServerCommand(CLI_Vector args)
   IPCReaderJob server_job{ in_filename, ipc_buffer };
 
   server_job.process();
-
 
   Utils::Log("Main thread finished.");
 

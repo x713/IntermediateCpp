@@ -14,7 +14,7 @@
 namespace lab {
   namespace cli {
 
-    using lab::cli::CLIState;
+//    using lab::cli::CLIState;
 
     class CLIProcessor {
 

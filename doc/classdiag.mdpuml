@@ -1,0 +1,32 @@
+Test 1234
+
+**yeah**
+
+@startuml Uml_1  
+database    Db1
+@enduml
+
+The quick brown fox
+
+	jumps
+
+@startuml Uml_2
+database    Db2
+database    Db3
+@enduml
+
+   over 
+---
+
+@startmindmap
+* Debian
+** Ubuntu
+*** Linux Mint
+*** Linux Mint2
+** LMDE
+** Raspbian with a very long name
+*** <s>Raspmbc</s> => OSMC
+@endmindmap
+
+--
+the lazy

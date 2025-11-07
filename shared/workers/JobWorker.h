@@ -8,15 +8,18 @@
 
 #include "../cli_processor/ComTypes.h"
 
-#include "../buffer/IBuffer.h"
+#include "../buffer/IProcessor.h"
+#include "../data/DataProcessor.h"
 #include "../../util/Utils.h"
 
 
 namespace lab {
   namespace worker {
 
-    using lab::data::IBuffer;
+    using lab::data::IProcessor;
     using lab::data::IOStatus;
+    using lab::data::FileDataSource;
+    using lab::data::FileDataSink;
 
     using lab::util::Utils;
 
@@ -28,16 +31,16 @@ namespace lab {
       FileJob() = delete;
 
     protected:
-      std::string m_inFilename;
-      std::shared_ptr<IBuffer> m_buffer;
+      std::string m_filename;
+      std::shared_ptr<IProcessor> m_processor;
 
     public:
       FileJob(const std::string& p_filename,
-        const std::shared_ptr<IBuffer>& ipc_buffer) {
+        const std::shared_ptr<IProcessor>& p_itc_processor) {
         Utils::LogDebug(" FileJob ctor");
 
-        m_inFilename = p_filename;
-        m_buffer = ipc_buffer;
+        m_filename = p_filename;
+        m_processor = p_itc_processor;
       }
 
       virtual ~FileJob() = default;
@@ -45,6 +48,10 @@ namespace lab {
       virtual void process() {
         Utils::LogDebug("FileJob processed");
       };
+
+      const std::string& getFilename() const{
+        return m_filename;
+      }
 
     };
 
@@ -77,32 +84,31 @@ namespace lab {
     public:
 
       ReaderJob(const std::string& p_filename,
-        const std::shared_ptr<IBuffer>& ipc_buffer)
-        : FileJob(p_filename, ipc_buffer) {
+        const std::shared_ptr<IProcessor>& p_itc_processor)
+        : FileJob(p_filename, p_itc_processor) {
         Utils::LogDebug(" ReaderJob ctor");
       }
 
       void process() override {
 
-        // open file for reading
-        std::ifstream istrm(m_inFilename, std::ios::binary);
-        if (!istrm.is_open()) {
-          Utils::Log("failed to open " + m_inFilename);
-          m_buffer->close();
-          istrm.close();
+        FileDataSource fsd(getFilename());
+        if(fsd.open() != IOStatus::IOOK ){
           return;
         }
-        consume(istrm);
-        istrm.close();
+
+        // open file for reading
+
+        consume(&fsd);
 
         Utils::Log(" ReaderJob processed");
       }
 
 
-      void consume(std::ifstream& p_ifstream) {
+      void consume(FileDataSource *p_dataSource) {
         bool done = false;
         while (!done) {
-          auto result = m_buffer->readLine(p_ifstream);
+
+          auto result = *m_processor << p_dataSource;
 
           if (IOStatus::IORINGFULL == result) {
             // TODO : sync spin lock with cv
@@ -114,7 +120,7 @@ namespace lab {
             done = true;
             break;
           }
-          else if (p_ifstream.fail()) {
+          else if (p_dataSource->fail()) {
             // read less than 256, but not EOF
 
             //done = true;
@@ -130,31 +136,32 @@ namespace lab {
     class WriterJob : public FileJob {
     public:
       WriterJob(const std::string& p_filename,
-        const std::shared_ptr<IBuffer>& ipc_buffer)
-        : FileJob(p_filename, ipc_buffer) {
+        const std::shared_ptr<IProcessor>& p_itc_processor)
+        : FileJob(p_filename, p_itc_processor) {
         Utils::LogDebug(" WriterJob ctor");
       }
 
+      
+
       void process() override {
 
-        std::ofstream ofstr(m_inFilename, std::ios::binary);
-        if (!ofstr.is_open()) {
-          Utils::Log("Failed to open dest file");
 
+
+        FileDataSink fsd(getFilename());
+        if (fsd.open() != IOStatus::IOOK) {
           return;
         }
 
-        produce(ofstr);
-        ofstr.close();
+        produce(&fsd);
 
         Utils::Log(" WriterJob processed");
 
       }
 
-      void produce(std::ofstream& p_ofstream) {
+      void produce(FileDataSink* p_dataSink) {
         bool done = false;
         while (!done) {
-          IOStatus result = m_buffer->writeLine(p_ofstream);
+          IOStatus result = *m_processor >> p_dataSink;
 
           if (IOStatus::IONEXTBUSY == result) {
             // TODO : wait?
@@ -175,8 +182,8 @@ namespace lab {
     class IPCReaderJob : public FileJob {
     public:
       IPCReaderJob(const std::string& p_filename,
-        const std::shared_ptr<IBuffer>& ipc_buffer)
-        : FileJob(p_filename, ipc_buffer) {
+        const std::shared_ptr<IProcessor>& ipc_processor)
+        : FileJob(p_filename, ipc_processor) {
         Utils::LogDebug(" IPCReader ctor");
       }
 
@@ -188,8 +195,8 @@ namespace lab {
     class IPCWriterJob : public FileJob {
     public:
       IPCWriterJob(const std::string& p_filename,
-        const std::shared_ptr<IBuffer>& ipc_buffer)
-        : FileJob(p_filename, ipc_buffer) {
+        const std::shared_ptr<IProcessor>& ipc_processor)
+        : FileJob(p_filename, ipc_processor) {
         Utils::LogDebug(" IPCWriterJob ctor");
       }
 

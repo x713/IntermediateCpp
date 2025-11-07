@@ -43,6 +43,9 @@
     <Filter Include="Header Files\shared\ipc\win">
       <UniqueIdentifier>{be5ce761-3a2f-464c-95c1-dbd794725283}</UniqueIdentifier>
     </Filter>
+    <Filter Include="UML">
+      <UniqueIdentifier>{b437ad5c-464d-4c41-ba88-b7af3bf113eb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Senorra.cpp">
@@ -56,7 +59,7 @@
     <ClInclude Include="app\cmds\MainCommand.h">
       <Filter>Header Files\app\cmds</Filter>
     </ClInclude>
-    <ClInclude Include="shared\buffer\IBuffer.h">
+    <ClInclude Include="shared\buffer\IProcessor.h">
       <Filter>Header Files\shared\buffer</Filter>
     </ClInclude>
     <ClInclude Include="shared\cli_processor\docs\CLIExamples.h">
@@ -92,5 +95,27 @@
     <ClInclude Include="shared\ipc\ipc_mutex.h">
       <Filter>Header Files\shared\ipc</Filter>
     </ClInclude>
+    <ClInclude Include="shared\data\DataProcessor.h">
+      <Filter>Header Files\shared\buffer</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="doc\classdiag.mdpuml">
+      <Filter>UML</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="doc\appdiag.mdpuml">
+      <Filter>UML</Filter>
+    </None>
+    <None Include="doc\appseq.mdpuml">
+      <Filter>UML</Filter>
+    </None>
+    <None Include="doc\appdiag_new.mdpuml">
+      <Filter>UML</Filter>
+    </None>
+    <None Include="doc\appseq_new.mdpuml">
+      <Filter>UML</Filter>
+    </None>
   </ItemGroup>
 </Project>
