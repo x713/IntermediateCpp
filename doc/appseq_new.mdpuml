@@ -1,0 +1,54 @@
+@startuml
+skinparam style strict
+
+actor main as "main() function"
+participant CopyCommand as "CopyCommand(args)"
+participant Utils
+participant RingBufferFactory
+participant ReaderJob
+participant WriterJob
+participant IBuffer as "thr_buffer (IBuffer)"
+participant Thread as "std::thread"
+participant CLIState
+
+main -> CopyCommand: call(args)
+activate CopyCommand
+
+' 1. Валидация аргументов
+CopyCommand -> Utils: Log("Two filenames expected")
+alt args.size() != 2 or in_filename == out_filename
+    CopyCommand --> main: returns CLIState::ERR_FMT_COMMAND
+    deactivate CopyCommand
+    return
+end
+
+CopyCommand -> Utils: Log("Input: ...")
+
+' 2. Создание буфера
+CopyCommand -> RingBufferFactory: createSyncTrippleBuffer()
+RingBufferFactory --> CopyCommand: returns thr_buffer
+
+' 3. Создание задач (Jobs)
+CopyCommand -> ReaderJob: create(in_filename, thr_buffer)
+CopyCommand -> WriterJob: create(out_filename, thr_buffer)
+
+' 4. Запуск потоков
+CopyCommand -> Thread: create(FileJob::process, reader)
+CopyCommand -> Thread: create(FileJob::process, writer)
+activate Thread
+Thread -> ReaderJob: process()
+ReaderJob -> IBuffer: read/write/full logic...
+Thread -> WriterJob: process()
+WriterJob -> IBuffer: read/write/full logic...
+
+' 5. Ожидание завершения
+CopyCommand -> Thread: join() (readerThread)
+CopyCommand -> Thread: join() (writerThread)
+deactivate Thread
+
+' 6. Завершение
+CopyCommand -> Utils: Log("Main thread finished.")
+CopyCommand --> main: returns CLIState::OK
+
+deactivate CopyCommand
+@enduml

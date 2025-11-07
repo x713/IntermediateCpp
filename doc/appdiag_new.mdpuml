@@ -1,0 +1,83 @@
+@startuml
+skinparam style strict
+skinparam classAttributeIconSize 0
+
+' CLI Entities
+interface CLI_Command
+class CLIState {
+  + State OK
+  + State ERR_FMT_COMMAND
+  + State toInt(state: CLIState): int {static}
+}
+class CLI_Vector
+
+' Buffer Entities
+interface IBuffer<T>
+class RingBufferFactory {
+  + createSyncTrippleBuffer(): IBuffer {static}
+  + createSyncIPCBuffer(): IBuffer {static}
+}
+
+' Worker Entities (Jobs)
+interface FileJob {
+  + process(): void
+}
+class ReaderJob
+class WriterJob
+class IPCReaderJob
+class IPCWriterJob
+
+' Utility
+class Utils {
+  + Log(message: const std::string&): void {static}
+}
+
+' COMMAND FUNCTIONS (Представлены как классы для UML)
+class CopyCommand {
+  + CopyCommand(args: CLI_Vector): CLIState::State
+}
+class SharedServerCommand {
+  + SharedServerCommand(args: CLI_Vector): CLIState::State
+}
+class SharedClientCommand {
+  + SharedClientCommand(args: CLI_Vector): CLIState::State
+}
+
+
+' ОТНОШЕНИЯ
+
+' Наследование
+FileJob <|-- ReaderJob
+FileJob <|-- WriterJob
+FileJob <|-- IPCReaderJob
+FileJob <|-- IPCWriterJob
+
+' Зависимости команд (через вызовы)
+CopyCommand ..> Utils : <<calls>>
+CopyCommand ..> RingBufferFactory : <<calls>>
+CopyCommand ..> ReaderJob : <<creates>>
+CopyCommand ..> WriterJob : <<creates>>
+CopyCommand ..> FileJob : <<calls process()>>
+CopyCommand ..> CLIState : <<returns>>
+ReaderJob ..> IBuffer : <<uses>>
+WriterJob ..> IBuffer : <<uses>>
+
+SharedServerCommand ..> Utils : <<calls>>
+SharedServerCommand ..> RingBufferFactory : <<calls>>
+SharedServerCommand ..> IPCReaderJob : <<creates>>
+SharedServerCommand ..> IPCReaderJob : <<calls process()>>
+SharedServerCommand ..> CLIState : <<returns>>
+IPCReaderJob ..> IBuffer : <<uses>>
+
+SharedClientCommand ..> Utils : <<calls>>
+SharedClientCommand ..> RingBufferFactory : <<calls>>
+SharedClientCommand ..> IPCWriterJob : <<creates>>
+SharedClientCommand ..> IPCWriterJob : <<calls process()>>
+SharedClientCommand ..> CLIState : <<returns>>
+IPCWriterJob ..> IBuffer : <<uses>>
+
+' RingBufferFactory создает IBuffer
+RingBufferFactory ..> IBuffer : <<creates>>
+
+footer Обновлено на основе реализации CopyCommand, SharedServerCommand, SharedClientCommand
+@enduml

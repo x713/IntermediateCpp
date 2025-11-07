@@ -130,16 +130,26 @@
     <ClInclude Include="app\cmds\MainCommand.h" />
     <ClInclude Include="shared\buffer\LineBuffer.h" />
     <ClInclude Include="shared\buffer\RingBuffer.h" />
-    <ClInclude Include="shared\buffer\IBuffer.h" />
+    <ClInclude Include="shared\buffer\IProcessor.h" />
     <ClInclude Include="shared\cli_processor\CLIProcessor.h" />
     <ClInclude Include="shared\cli_processor\CLIState.h" />
     <ClInclude Include="shared\cli_processor\ComTypes.h" />
     <ClInclude Include="shared\cli_processor\docs\CLIExamples.h" />
+    <ClInclude Include="shared\data\DataProcessor.h" />
     <ClInclude Include="shared\ipc\IpcWin.h" />
     <ClInclude Include="shared\ipc\ipc_mutex.h" />
     <ClInclude Include="shared\ipc\ipc_sfile.h" />
     <ClInclude Include="shared\workers\JobWorker.h" />
     <ClInclude Include="util\Utils.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="doc\classdiag.mdpuml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="doc\appdiag.mdpuml" />
+    <None Include="doc\appdiag_new.mdpuml" />
+    <None Include="doc\appseq.mdpuml" />
+    <None Include="doc\appseq_new.mdpuml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

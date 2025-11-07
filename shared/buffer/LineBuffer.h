@@ -4,13 +4,14 @@
 #include <fstream>
 
 #include "../../util/Utils.h"
-#include "IBuffer.h"
+#include "IProcessor.h"
 
 namespace lab {
   namespace data {
 
     using lab::util::Utils;
     using lab::data::IOStatus;
+    using lab::data::IProcessor;
 
     class LineBuffer {
 
@@ -22,21 +23,24 @@ namespace lab {
       std::streamsize cacheBufferSize = 0;
 
     public:
-      IOStatus operator<<(std::ifstream& p_ifstream) {
-
-        p_ifstream.read(m_buffer.data(), c_bufferSize);
+      //IOStatus operator<<(std::ifstream& p_ifstream) {
+      IOStatus operator<<(IDataSource *p_dataSource) {
+        if(!p_dataSource){
+          return IOStatus::IOFAILPTR;
+        }
+        p_dataSource->read(m_buffer.data(), c_bufferSize);
 
         // actual read
-        std::streamsize actual_read_count = p_ifstream.gcount();
+        std::streamsize actual_read_count = p_dataSource->getCount();
         cacheBufferSize = actual_read_count;
 
-        if (p_ifstream.eof()) {
+        if (p_dataSource->eof()) {
           Utils::LogDebug("EOF. Read bytes:", ' ');
           Utils::LogDebug(actual_read_count);
 
           return IOStatus::IOEOF;
         }
-        else if (p_ifstream.fail()) {
+        else if (p_dataSource->fail()) {
 
           // read less than 256, but not EOF
           Utils::LogDebug("FAIL : Read less than 256, but not EOF", ' ');
@@ -50,9 +54,12 @@ namespace lab {
         return IOStatus::IOOK;
       }
 
-      void operator>>(std::ofstream& p_ostream) {
+      void operator>>(IDataSink* p_dataSink) {
+        if (!p_dataSink) {
+          return;
+        }
         if (cacheBufferSize) {
-          p_ostream.write(m_buffer.data(), cacheBufferSize);
+          p_dataSink->write(m_buffer.data(), cacheBufferSize);
         }
         else {
           Utils::LogDebug("WARN : Write buffer 0 zise, skip writing");

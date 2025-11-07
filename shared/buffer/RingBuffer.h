@@ -9,7 +9,7 @@
 #include <string>
 #include <iostream> 
 
-#include "IBuffer.h"
+#include "IProcessor.h"
 #include "LineBuffer.h"
 
 
@@ -24,7 +24,7 @@ namespace lab {
 
     // TODO : TEST: PerfTest different buffer sizes
     template<size_t PoolSize, typename MutexType>
-    class RingBuffer : public IBuffer {
+    class RingBuffer : public IProcessor {
 
       // Tripple buffer at least
       static constexpr size_t c_minPoolSize = 3;
@@ -76,7 +76,11 @@ namespace lab {
       }
 
 
-      IOStatus readLine(std::ifstream& p_istream) {
+
+      IOStatus operator<< (IDataSource * p_dataSource) {
+        if (!p_dataSource) {
+          return IOStatus::IOFAILPTR;
+        }
         size_t nextWriteIdx;
 
         { // CRITICAL SECTION 
@@ -87,23 +91,27 @@ namespace lab {
             // Buffer is still full
             return IOStatus::IORINGFULL; // Status::FullBuffer
           }
-          
+
         } // END CRITICAL SECTION
 
         // write data from stream to pool
-        auto result = m_pool[m_writeIdx] << p_istream;
+        auto result = m_pool[m_writeIdx] << p_dataSource;
 
         const std::lock_guard<MutexType> lock(m_IndexSemaphore);
         m_writeIdx = nextWriteIdx;
 
-        if(IOStatus::IOEOF == result){
+        if (IOStatus::IOEOF == result) {
           m_isReadingInput = false;
         }
 
-        return result; 
+        return result;
       }
 
-      IOStatus writeLine(std::ofstream& p_ostream) {
+      IOStatus operator>> (IDataSink* p_dataSink) {
+        if (!p_dataSink) {
+          return IOStatus::IOFAILPTR;
+        }
+
         const size_t nextReadIdx = nextIdx(m_readIdx);
 
         { // CRITICAL SECTION 
@@ -113,7 +121,8 @@ namespace lab {
             if (m_isReadingInput) {
               // nextBuffer is still writing
               return IOStatus::IONEXTBUSY;
-            }else{
+            }
+            else {
               // reached end of the data
               return IOStatus::IOEOF;
             }
@@ -124,12 +133,12 @@ namespace lab {
         }
 
         // write data from pool to stream
-        m_pool[m_readIdx] >> p_ostream;
+        m_pool[m_readIdx] >> p_dataSink;
 
         return IOStatus::IOOK;
       }
 
-      void close() override{
+      void close() override {
         const std::lock_guard<MutexType> lock(m_IndexSemaphore);
         m_isReadingInput = false;
       };

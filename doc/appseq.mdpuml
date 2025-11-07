@@ -1,0 +1,46 @@
+@startuml
+skinparam style strict
+
+actor User
+participant main as "main() function"
+participant cmdProc as "CLIProcessor"
+participant CLIState as "CLIState"
+participant CopyCommand as "CopyCommand (function/object)"
+participant SharedClientCommand as "SharedClientCommand (function/object)"
+participant SharedServerCommand as "SharedServerCommand (function/object)"
+
+User -> main: execute application with arguments (argc, argv)
+
+activate main
+
+main -> cmdProc: create new CLIProcessor(argc, argv)
+activate cmdProc
+
+main -> cmdProc: TrimProgramName(argv[0])
+main -> cmdProc: SetHelp(...)
+
+main -> cmdProc: AddCommand("cp", CopyCommand)
+cmdProc -> CopyCommand: register command
+' (Примечание: здесь команды передаются как функции или объекты-команды)
+
+main -> cmdProc: AddCommand("tpc", SharedClientCommand)
+cmdProc -> SharedClientCommand: register command
+
+main -> cmdProc: AddCommand("tps", SharedServerCommand)
+cmdProc -> SharedServerCommand: register command
+
+main -> cmdProc: Run()
+activate cmdProc
+' Внутри Run() CLIProcessor обрабатывает аргументы и вызывает соответствующую команду
+cmdProc --> main: returns CLIState (e.g., Success, Failure)
+deactivate cmdProc
+
+main -> CLIState: toInt(cmdProc.Run() result)
+activate CLIState
+CLIState --> main: returns int result
+deactivate CLIState
+
+main --> User: returns int result
+
+deactivate main
+@enduml
