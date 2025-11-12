@@ -24,7 +24,7 @@ namespace lab {
 
     // TODO : TEST: PerfTest different buffer sizes
     template<size_t PoolSize, typename MutexType>
-    class RingBuffer : public IProcessor {
+    class CopyProcessor : public IProcessor {
 
       // Tripple buffer at least
       static constexpr size_t c_minPoolSize = 3;
@@ -53,7 +53,7 @@ namespace lab {
 
     public:
 
-      RingBuffer() {
+      CopyProcessor() {
         const std::lock_guard<MutexType> lock(m_IndexSemaphore);
 #ifdef TB_USE_VECTOR
         for (size_t i = 0; i < c_bufferPool; ++i) {
@@ -145,15 +145,15 @@ namespace lab {
 
     };
 
-    class RingBufferFactory {
+    class CopyProcessorFactory {
     public:
-      static std::shared_ptr<RingBuffer<3, std::mutex>> createSyncTrippleBuffer() {
-        auto buffer = std::make_shared<RingBuffer<3, std::mutex>>();
+      static std::shared_ptr<CopyProcessor<3, std::mutex>> createThreadsProcessor() {
+        auto buffer = std::make_shared<CopyProcessor<3, std::mutex>>();
         return buffer;
       }
 
-      static std::shared_ptr<RingBuffer<3, NamedWinMutex>> createSyncIPCBuffer() {
-        auto buffer = std::make_shared<RingBuffer<3, NamedWinMutex>>();
+      static std::shared_ptr<CopyProcessor<3, NamedWinMutex>> createIntersystemProcessor() {
+        auto buffer = std::make_shared<CopyProcessor<3, NamedWinMutex>>();
         return buffer;
       }
     };

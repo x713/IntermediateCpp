@@ -39,6 +39,14 @@ namespace lab {
       AddCommand(p_cmdName, p_cmdPtr);
     }
 
+    // Add commands set to map
+    void CLIProcessor::AddCommandSet(CLI_CommandSet p_pairList) {
+      for (const auto& el : p_pairList) {
+
+        AddCommand(el.first, el.second);
+      }
+    }
+
     CLI_String CLIProcessor::GetNextCommand() {
       if (!m_parsedArgs.empty()) {
         auto l_cmdName = m_parsedArgs.front();

@@ -25,6 +25,7 @@ namespace lab {
 
     using CLI_Command = std::function< CLIState::State (CLI_Vector) >;
     using CLI_CommandMap = std::map< CLI_String, CLI_Command >;
+    using CLI_CommandSet = std::vector<std::pair<const CLI_String, const CLI_Command>>;
 
 
     static CLI_String StripQuotes(CLI_String m_str, const char p_TrimChar = '\"') {

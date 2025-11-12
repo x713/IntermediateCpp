@@ -48,6 +48,8 @@ namespace lab {
 
       void AddCommand(const CLI_String, const CLI_Command, const CLI_String);
 
+      void AddCommandSet(std::vector<std::pair<const CLI_String, const CLI_Command>>);
+
       virtual void PrintHelp();
 
       void SetHelp(CLI_String p_helpStr);

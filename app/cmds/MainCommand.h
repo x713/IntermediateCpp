@@ -15,7 +15,7 @@ using lab::cli::CLIState;
 using lab::cli::CLI_Vector;
 using lab::cli::CLI_Command;
 
-using lab::data::RingBufferFactory;
+using lab::data::CopyProcessorFactory;
 
 using lab::worker::FileJob;
 using lab::worker::ReaderJob;
@@ -26,7 +26,7 @@ using lab::worker::IPCWriterJob;
 using lab::util::Utils;
 
 
-CLIState::State CopyCommand(CLI_Vector args)
+CLIState::State ThreadedCopyCommand(CLI_Vector args)
 {
   if (args.size() != 2) {
     Utils::Log(" Two filenames expected");
@@ -43,7 +43,7 @@ CLIState::State CopyCommand(CLI_Vector args)
     return CLIState::State::ERR_FMT_COMMAND;
   }
 
-  auto thr_buffer = RingBufferFactory::createSyncTrippleBuffer();
+  auto thr_buffer = CopyProcessorFactory::createThreadsProcessor();
 
   ReaderJob reader{ in_filename, thr_buffer };
   WriterJob writer{ out_filename, thr_buffer };
@@ -74,7 +74,7 @@ CLIState::State SharedServerCommand(CLI_Vector args)
   
   Utils::Log("Input: " + in_filename);
 
-  auto ipc_buffer = RingBufferFactory::createSyncIPCBuffer();
+  auto ipc_buffer = CopyProcessorFactory::createIntersystemProcessor();
 
   IPCReaderJob server_job{ in_filename, ipc_buffer };
 
@@ -99,7 +99,7 @@ CLIState::State SharedClientCommand(CLI_Vector args)
 
   Utils::Log("Input: " + out_filename);
 
-  auto ipc_buffer = RingBufferFactory::createSyncIPCBuffer();
+  auto ipc_buffer = CopyProcessorFactory::createIntersystemProcessor();
 
   IPCWriterJob client_job{ out_filename, ipc_buffer };
 

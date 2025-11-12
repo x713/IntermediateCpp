@@ -3,6 +3,7 @@
 
 using lab::cli::CLIProcessor;
 using lab::cli::CLIState;
+using lab::cli::CLI_CommandSet;
 
 int main(const int argc, const char* argv[])
 {
@@ -15,20 +16,22 @@ int main(const int argc, const char* argv[])
                   "\n    --tps to start copy server and broadcast file"
                   "\n    --tpc to start copy client and receive file");
 
-  cmdProc.AddCommand("cp", CopyCommand);
-  cmdProc.AddCommand("tpc", SharedClientCommand);
-  cmdProc.AddCommand("tps", SharedServerCommand);
+  //cmdProc.AddCommand("cp", CopyCommand);
+  //cmdProc.AddCommand("tpc", SharedClientCommand);
+  //cmdProc.AddCommand("tps", SharedServerCommand);
+
+  const CLI_CommandSet commandSet = {
+    // single call
+    {"cp", ThreadedCopyCommand},
+    // must be called twice, one for each side separatelly
+    {"tps", SharedServerCommand},
+    {"tpc", SharedClientCommand}
+  };
+
+  cmdProc.AddCommandSet(commandSet);
 
   auto result = cmdProc.Run();
 
   return CLIState::toInt(result);
 }
 
-/*
-*   // Source -> Sink
-    
-    SOLID
-
-
-* 
-*/
