@@ -21,10 +21,10 @@ namespace lab {
 
     using lab::util::Utils;
 
-
+	// Threaded Data Processor with Ring Buffer Pool
     // TODO : TEST: PerfTest different buffer sizes
     template<size_t PoolSize, typename MutexType>
-    class CopyProcessor : public IProcessor {
+    class ThreadedDataProcessor : public IProcessor {
 
       // Tripple buffer at least
       static constexpr size_t c_minPoolSize = 3;
@@ -51,9 +51,10 @@ namespace lab {
       // Transmission signaling
       bool m_isReadingInput = false;
 
+
     public:
 
-      CopyProcessor() {
+      ThreadedDataProcessor() {
         const std::lock_guard<MutexType> lock(m_IndexSemaphore);
 #ifdef TB_USE_VECTOR
         for (size_t i = 0; i < c_bufferPool; ++i) {
@@ -62,8 +63,8 @@ namespace lab {
 #endif
         // ifdef array : no need to init, should be allocated already
 
-        size_t m_writeIdx = 0;
-        size_t m_readIdx = c_bufferPool - 1;
+        m_writeIdx = 0;
+        m_readIdx = c_bufferPool - 1;
         m_isReadingInput = true;
       }
 
@@ -77,7 +78,7 @@ namespace lab {
 
 
 
-      IOStatus operator<< (IDataSource * p_dataSource) {
+      IOStatus operator<< (IDataSource* p_dataSource) {
         if (!p_dataSource) {
           return IOStatus::IOFAILPTR;
         }
@@ -143,19 +144,13 @@ namespace lab {
         m_isReadingInput = false;
       };
 
+      const bool isDone() override {
+        const std::lock_guard<MutexType> lock(m_IndexSemaphore);
+        return m_isReadingInput;
+      };
+
     };
 
-    class CopyProcessorFactory {
-    public:
-      static std::shared_ptr<CopyProcessor<3, std::mutex>> createThreadsProcessor() {
-        auto buffer = std::make_shared<CopyProcessor<3, std::mutex>>();
-        return buffer;
-      }
-
-      static std::shared_ptr<CopyProcessor<3, NamedWinMutex>> createIntersystemProcessor() {
-        auto buffer = std::make_shared<CopyProcessor<3, NamedWinMutex>>();
-        return buffer;
-      }
-    };
+    
   }
 }

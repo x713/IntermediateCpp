@@ -40,11 +40,11 @@
     <Filter Include="Header Files\shared\ipc">
       <UniqueIdentifier>{8f74cf7c-6344-47b1-b3d8-cb53f7630165}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\shared\ipc\win">
-      <UniqueIdentifier>{be5ce761-3a2f-464c-95c1-dbd794725283}</UniqueIdentifier>
-    </Filter>
     <Filter Include="UML">
       <UniqueIdentifier>{b437ad5c-464d-4c41-ba88-b7af3bf113eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\shared\ipc\tests">
+      <UniqueIdentifier>{be5ce761-3a2f-464c-95c1-dbd794725283}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -80,7 +80,7 @@
     <ClInclude Include="util\Utils.h">
       <Filter>Header Files\util</Filter>
     </ClInclude>
-    <ClInclude Include="shared\buffer\RingBuffer.h">
+    <ClInclude Include="shared\buffer\ThreadedDataProcessor.h">
       <Filter>Header Files\shared\buffer</Filter>
     </ClInclude>
     <ClInclude Include="shared\buffer\LineBuffer.h">
@@ -89,13 +89,22 @@
     <ClInclude Include="shared\ipc\ipc_sfile.h">
       <Filter>Header Files\shared\ipc</Filter>
     </ClInclude>
-    <ClInclude Include="shared\ipc\IpcWin.h">
-      <Filter>Header Files\shared\ipc\win</Filter>
+    <ClInclude Include="shared\ipc\tests.h">
+      <Filter>Header Files\shared\ipc\tests</Filter>
     </ClInclude>
     <ClInclude Include="shared\ipc\ipc_mutex.h">
       <Filter>Header Files\shared\ipc</Filter>
     </ClInclude>
-    <ClInclude Include="shared\data\DataProcessor.h">
+    <ClInclude Include="shared\data\SourceSink.h">
+      <Filter>Header Files\shared\buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\buffer\ProcessorFactory.h">
+      <Filter>Header Files\shared\buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\buffer\SCopyProc.h">
+      <Filter>Header Files\shared\buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\buffer\IOStatus.h">
       <Filter>Header Files\shared\buffer</Filter>
     </ClInclude>
   </ItemGroup>

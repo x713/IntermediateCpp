@@ -9,7 +9,7 @@
 #include "../cli_processor/ComTypes.h"
 
 #include "../buffer/IProcessor.h"
-#include "../data/DataProcessor.h"
+#include "../data/SourceSink.h"
 #include "../../util/Utils.h"
 
 
@@ -18,6 +18,7 @@ namespace lab {
 
     using lab::data::IProcessor;
     using lab::data::IOStatus;
+
     using lab::data::FileDataSource;
     using lab::data::FileDataSink;
 

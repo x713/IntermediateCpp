@@ -10,6 +10,7 @@ namespace lab {
     class SharedData {
     };
 
+
     class SharedFile : public SharedData {
     };
 
@@ -44,9 +45,9 @@ namespace lab {
     class SharedUnixMemory : public SharedMemory {
     };
 
-    _Ret_maybenull_
+    //_Ret_maybenull_
 
-      class SharedWinMemory : public SharedMemory {
+    class SharedWinMemory : public SharedMemory {
       void makeMemFile() {
 
 

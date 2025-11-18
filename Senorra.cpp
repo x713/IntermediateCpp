@@ -16,10 +16,6 @@ int main(const int argc, const char* argv[])
                   "\n    --tps to start copy server and broadcast file"
                   "\n    --tpc to start copy client and receive file");
 
-  //cmdProc.AddCommand("cp", CopyCommand);
-  //cmdProc.AddCommand("tpc", SharedClientCommand);
-  //cmdProc.AddCommand("tps", SharedServerCommand);
-
   const CLI_CommandSet commandSet = {
     // single call
     {"cp", ThreadedCopyCommand},

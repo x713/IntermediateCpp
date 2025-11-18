@@ -29,26 +29,26 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -128,15 +128,18 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="app\cmds\MainCommand.h" />
+    <ClInclude Include="shared\buffer\IOStatus.h" />
     <ClInclude Include="shared\buffer\LineBuffer.h" />
-    <ClInclude Include="shared\buffer\RingBuffer.h" />
+    <ClInclude Include="shared\buffer\ProcessorFactory.h" />
+    <ClInclude Include="shared\buffer\SCopyProc.h" />
+    <ClInclude Include="shared\buffer\ThreadedDataProcessor.h" />
     <ClInclude Include="shared\buffer\IProcessor.h" />
     <ClInclude Include="shared\cli_processor\CLIProcessor.h" />
     <ClInclude Include="shared\cli_processor\CLIState.h" />
     <ClInclude Include="shared\cli_processor\ComTypes.h" />
     <ClInclude Include="shared\cli_processor\docs\CLIExamples.h" />
-    <ClInclude Include="shared\data\DataProcessor.h" />
-    <ClInclude Include="shared\ipc\IpcWin.h" />
+    <ClInclude Include="shared\data\SourceSink.h" />
+    <ClInclude Include="shared\ipc\tests.h" />
     <ClInclude Include="shared\ipc\ipc_mutex.h" />
     <ClInclude Include="shared\ipc\ipc_sfile.h" />
     <ClInclude Include="shared\workers\JobWorker.h" />

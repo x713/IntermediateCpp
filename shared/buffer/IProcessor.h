@@ -1,5 +1,6 @@
 #pragma once
 
+#include "IOStatus.h"
 
 //
 //
@@ -7,17 +8,8 @@
 namespace lab {
   namespace data {
 
-    enum class IOStatus {
-      IOOK = 0,
-      IOEOF,
-      IOFAIL,
-      IORINGFULL, // WRITE BUFF FULL
-      IONEXTBUSY, // READ BUFF NOT RDY
-      IOFAILPTR,
-      IOFAILOPEN,
-    };
 
-    class IData{
+    class IData {
     public:
       virtual bool fail() = 0;
       virtual ~IData() {};
@@ -44,7 +36,9 @@ namespace lab {
     public:
       virtual IOStatus operator>>(IDataSink* p_dataSink) = 0;
       virtual IOStatus operator<<(IDataSource* p_dataSource) = 0;
+      virtual const bool isDone() = 0;
       virtual void close() = 0;
+
     };
 
 

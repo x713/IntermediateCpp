@@ -78,7 +78,7 @@ namespace lab {
           return IOStatus::IOFAILPTR;
         }
 
-        m_ofstr->write(p_buf, p_count);
+        m_ofstr->write(p_buf, static_cast<std::streamsize>(p_count));
 
         if(m_ofstr->fail()){
           return IOStatus::IOFAIL;

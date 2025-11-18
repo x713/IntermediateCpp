@@ -3,7 +3,8 @@
 #include "../../shared/cli_processor/ComTypes.h"
 
 #include "../../shared/buffer/IProcessor.h"
-#include "../../shared/buffer/RingBuffer.h"
+#include "../../shared/buffer/ThreadedDataProcessor.h"
+#include "../../shared/buffer/ProcessorFactory.h"
 #include "../../shared/workers/JobWorker.h"
 
 #include "../../util/Utils.h"
@@ -43,10 +44,11 @@ CLIState::State ThreadedCopyCommand(CLI_Vector args)
     return CLIState::State::ERR_FMT_COMMAND;
   }
 
-  auto thr_buffer = CopyProcessorFactory::createThreadsProcessor();
+  //auto thr_processor = CopyProcessorFactory::createThreadsProcessor();
+  auto thr_processor = CopyProcessorFactory::createIntersystemProcessor();
 
-  ReaderJob reader{ in_filename, thr_buffer };
-  WriterJob writer{ out_filename, thr_buffer };
+  ReaderJob reader{ in_filename, thr_processor };
+  WriterJob writer{ out_filename, thr_processor };
 
   std::thread readerThread(&FileJob::process, &reader);
   std::thread writerThread(&FileJob::process, &writer);
@@ -74,9 +76,9 @@ CLIState::State SharedServerCommand(CLI_Vector args)
   
   Utils::Log("Input: " + in_filename);
 
-  auto ipc_buffer = CopyProcessorFactory::createIntersystemProcessor();
+  auto ipc_processor = CopyProcessorFactory::createIntersystemProcessor();
 
-  IPCReaderJob server_job{ in_filename, ipc_buffer };
+  IPCReaderJob server_job{ in_filename, ipc_processor };
 
   server_job.process();
 
