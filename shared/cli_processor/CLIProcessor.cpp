@@ -99,7 +99,7 @@ namespace lab {
             // Optional: Log the exception message (e.what())
             // Utils::Log("Exception: ", e.what());
             Utils::LogDebug("CLIProcessor m_commands map failure");
-            return CLIState::State::ERR_NOT_FOUND;;
+            return CLIState::State::ERR_NOT_FOUND;
           }
 
 

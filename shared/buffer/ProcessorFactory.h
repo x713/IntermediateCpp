@@ -1,5 +1,4 @@
 #pragma once
-#pragma once
 
 
 #include <vector>
@@ -12,7 +11,7 @@
 
 #include "IProcessor.h"
 #include "ThreadedDataProcessor.h"
-#include "SCopyProc.h"
+#include "WinIPCProcessor.h"
 #include "LineBuffer.h"
 
 
@@ -24,7 +23,7 @@ namespace lab {
 
     //using lab::util::Utils;
     using lab::data::ThreadedDataProcessor;
-    using lab::data::WICopyProcessor;
+    using lab::data::WinIPCProcessor;
 
 		// Default pool size
 		constexpr size_t c_defaultPoolSize = 3;
@@ -43,8 +42,8 @@ namespace lab {
         return result;
       }
 
-      static std::shared_ptr<WICopyProcessor<c_defaultPoolSize>> createIntersystemProcessor() {
-        auto result = std::make_shared<WICopyProcessor<c_defaultPoolSize>>();
+      static std::shared_ptr<WinIPCProcessor<c_defaultPoolSize>> createIntersystemProcessor() {
+        auto result = std::make_shared<WinIPCProcessor<c_defaultPoolSize>>();
         return result;
       }
     };

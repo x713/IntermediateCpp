@@ -122,8 +122,7 @@ namespace lab {
             break;
           }
           else if (p_dataSource->fail()) {
-            // read less than 256, but not EOF
-
+            // read less than buff size, but not EOF
             //done = true;
             //break;
           }
@@ -141,12 +140,8 @@ namespace lab {
         : FileJob(p_filename, p_itc_processor) {
         Utils::LogDebug(" WriterJob ctor");
       }
-
       
-
       void process() override {
-
-
 
         FileDataSink fsd(getFilename());
         if (fsd.open() != IOStatus::IOOK) {
@@ -156,7 +151,6 @@ namespace lab {
         produce(&fsd);
 
         Utils::Log(" WriterJob processed");
-
       }
 
       void produce(FileDataSink* p_dataSink) {
@@ -180,29 +174,56 @@ namespace lab {
     };
 
 
-    class IPCReaderJob : public FileJob {
+    class IPCServerJob : public ReaderJob{  
     public:
-      IPCReaderJob(const std::string& p_filename,
-        const std::shared_ptr<IProcessor>& ipc_processor)
-        : FileJob(p_filename, ipc_processor) {
-        Utils::LogDebug(" IPCReader ctor");
-      }
-
-      void process() override {
-        Utils::LogDebug(" IPCReader process ");
+      IPCServerJob(const std::string& p_filename,
+        const std::shared_ptr<IProcessor>& p_itc_processor)
+        : ReaderJob(p_filename, p_itc_processor) {
+        Utils::LogDebug(" IPCServerJob ctor");
       }
     };
 
-    class IPCWriterJob : public FileJob {
+    class IPCClientJob : public FileJob {
     public:
-      IPCWriterJob(const std::string& p_filename,
+      IPCClientJob(const std::string& p_filename,
         const std::shared_ptr<IProcessor>& ipc_processor)
         : FileJob(p_filename, ipc_processor) {
-        Utils::LogDebug(" IPCWriterJob ctor");
+        Utils::LogDebug(" IPCClientJob ctor");
       }
 
       void process() override {
-        Utils::LogDebug(" IPCWriterJob process ");
+        Utils::LogDebug(" IPCClientJob process ");
+
+        FileDataSink fsd(getFilename());
+        if (fsd.open() != IOStatus::IOOK) {
+          return;
+        }
+
+        produce(&fsd);
+
+        Utils::Log(" WriterJob processed");
+      }
+
+      void produce(FileDataSink* p_dataSink) {
+        bool done = false;
+        while (!done) {
+          IOStatus result = *m_processor >> p_dataSink;
+
+          if (IOStatus::IONEXTBUSY == result) {
+            // TODO : wait?
+            continue;
+          }
+
+          if (IOStatus::IOEOF == result) {
+            done = true;
+            break;
+          }
+
+          Utils::Log(" Data read awaiting for consumer");
+          m_processor->wait();
+
+        }
+
       }
 
     };

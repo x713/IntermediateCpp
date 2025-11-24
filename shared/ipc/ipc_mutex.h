@@ -18,6 +18,8 @@ namespace lab {
 
 
 
+    const std::wstring& CONTROL_MUTEX_NAME = L"Global\\TransferControlMutex";
+
     // Provides a system-wide, recursive, named lock. 
     // This class satisfies requirements of C++11 concept "Lockable",
     // i.e. can be (and should be) used with unique_lock etc.
@@ -26,13 +28,28 @@ namespace lab {
     private:
       HANDLE m_handle{};
       const std::wstring& m_name = L"IPCWMutex";
+      bool m_isServer = false;
     public:
 
 
-      NamedWinMutex() {
-        m_handle = CreateMutexW(nullptr, FALSE, m_name.c_str());
-        if (m_handle == NULL) {
-          throw std::runtime_error("Creation of mutex failed");
+      NamedWinMutex(bool p_isServer = true)
+        : m_isServer(p_isServer) {
+
+        if (m_isServer) {
+          m_handle = CreateMutexW(nullptr, FALSE, m_name.c_str());
+          if (m_handle == NULL) {
+            std::string log_Str = "SERVER: Error creating mutex (" + std::to_string(GetLastError()) + ")";
+            Utils::LogDebug(log_Str);
+            throw std::runtime_error("Creation of mutex failed");
+          }
+        }
+        else {
+          m_handle = OpenMutex(MUTEX_ALL_ACCESS, FALSE, m_name.c_str());
+
+          if (m_handle == NULL) {
+            Utils::LogDebug("CLIENT: Error opening mutex (" + std::to_string(GetLastError()) + ")");
+            throw std::runtime_error("Opening of mutex failed");
+          }
         }
       }
 
@@ -52,6 +69,10 @@ namespace lab {
 
 
       void lock() {
+        if (!m_handle) {
+          throw std::runtime_error("Failed to get mutex");
+        }
+
         const auto result = WaitForSingleObject(m_handle, INFINITE);
         if (result == WAIT_ABANDONED) {
           // Warning: Lock obtained, but on an abandoned mutex

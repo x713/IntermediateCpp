@@ -8,12 +8,13 @@
 namespace lab {
   namespace data {
 
-
-    class IData {
-    public:
-      virtual bool fail() = 0;
-      virtual ~IData() {};
-    };
+    /*
+        class IData {
+        public:
+          virtual bool fail() = 0;
+          virtual ~IData() {};
+        };
+    */
 
     class IDataSink {
     public:
@@ -36,9 +37,8 @@ namespace lab {
     public:
       virtual IOStatus operator>>(IDataSink* p_dataSink) = 0;
       virtual IOStatus operator<<(IDataSource* p_dataSource) = 0;
-      virtual const bool isDone() = 0;
       virtual void close() = 0;
-
+      virtual void wait() = 0;
     };
 
 

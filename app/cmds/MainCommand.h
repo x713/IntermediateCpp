@@ -1,5 +1,5 @@
 #pragma once
- 
+
 #include "../../shared/cli_processor/ComTypes.h"
 
 #include "../../shared/buffer/IProcessor.h"
@@ -21,8 +21,8 @@ using lab::data::CopyProcessorFactory;
 using lab::worker::FileJob;
 using lab::worker::ReaderJob;
 using lab::worker::WriterJob;
-using lab::worker::IPCReaderJob;
-using lab::worker::IPCWriterJob;
+using lab::worker::IPCServerJob;
+using lab::worker::IPCClientJob;
 
 using lab::util::Utils;
 
@@ -44,8 +44,8 @@ CLIState::State ThreadedCopyCommand(CLI_Vector args)
     return CLIState::State::ERR_FMT_COMMAND;
   }
 
-  //auto thr_processor = CopyProcessorFactory::createThreadsProcessor();
-  auto thr_processor = CopyProcessorFactory::createIntersystemProcessor();
+  auto thr_processor = CopyProcessorFactory::createThreadsProcessor();
+  //auto thr_processor = CopyProcessorFactory::createIntersystemProcessor();
 
   ReaderJob reader{ in_filename, thr_processor };
   WriterJob writer{ out_filename, thr_processor };
@@ -73,16 +73,17 @@ CLIState::State SharedServerCommand(CLI_Vector args)
   }
 
   const std::string in_filename{ args[0] };
-  
+
   Utils::Log("Input: " + in_filename);
 
   auto ipc_processor = CopyProcessorFactory::createIntersystemProcessor();
 
-  IPCReaderJob server_job{ in_filename, ipc_processor };
+  IPCServerJob server_job{ in_filename, ipc_processor };
+  //IPCReaderJob server_job{ in_filename, ipc_processor };
 
   server_job.process();
 
-  Utils::Log("Main thread finished.");
+  Utils::Log("Server process finished.");
 
   return CLIState::State::OK;
 }
@@ -99,15 +100,15 @@ CLIState::State SharedClientCommand(CLI_Vector args)
 
   const std::string out_filename{ args[0] };
 
-  Utils::Log("Input: " + out_filename);
+  Utils::Log("Output: " + out_filename);
 
   auto ipc_buffer = CopyProcessorFactory::createIntersystemProcessor();
 
-  IPCWriterJob client_job{ out_filename, ipc_buffer };
+  IPCClientJob client_job{ out_filename, ipc_buffer };
 
   client_job.process();
 
-  Utils::Log("Main thread finished.");
+  Utils::Log("Client process finished.");
 
   return CLIState::State::OK;
 }

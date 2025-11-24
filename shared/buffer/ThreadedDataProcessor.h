@@ -21,7 +21,7 @@ namespace lab {
 
     using lab::util::Utils;
 
-	// Threaded Data Processor with Ring Buffer Pool
+    // Threaded Data Processor with Ring Buffer Pool
     // TODO : TEST: PerfTest different buffer sizes
     template<size_t PoolSize, typename MutexType>
     class ThreadedDataProcessor : public IProcessor {
@@ -46,7 +46,7 @@ namespace lab {
       size_t m_writeIdx = 0;
       size_t m_readIdx = c_bufferPool - 1;
       // Sync mutex
-      MutexType m_IndexSemaphore;
+      MutexType m_IndexMutex;
 
       // Transmission signaling
       bool m_isReadingInput = false;
@@ -55,7 +55,7 @@ namespace lab {
     public:
 
       ThreadedDataProcessor() {
-        const std::lock_guard<MutexType> lock(m_IndexSemaphore);
+        const std::lock_guard<MutexType> lock(m_IndexMutex);
 #ifdef TB_USE_VECTOR
         for (size_t i = 0; i < c_bufferPool; ++i) {
           m_pool.push_back({});
@@ -85,7 +85,7 @@ namespace lab {
         size_t nextWriteIdx;
 
         { // CRITICAL SECTION 
-          const std::lock_guard<MutexType> lock(m_IndexSemaphore);
+          const std::lock_guard<MutexType> lock(m_IndexMutex);
 
           nextWriteIdx = nextIdx(m_writeIdx);
           if (nextWriteIdx == m_readIdx) {
@@ -98,7 +98,7 @@ namespace lab {
         // write data from stream to pool
         auto result = m_pool[m_writeIdx] << p_dataSource;
 
-        const std::lock_guard<MutexType> lock(m_IndexSemaphore);
+        const std::lock_guard<MutexType> lock(m_IndexMutex);
         m_writeIdx = nextWriteIdx;
 
         if (IOStatus::IOEOF == result) {
@@ -117,7 +117,7 @@ namespace lab {
 
         { // CRITICAL SECTION 
           // try to move 'read window'
-          const std::lock_guard<MutexType> lock(m_IndexSemaphore);
+          const std::lock_guard<MutexType> lock(m_IndexMutex);
           if (m_writeIdx == nextReadIdx) {
             if (m_isReadingInput) {
               // nextBuffer is still writing
@@ -140,17 +140,15 @@ namespace lab {
       }
 
       void close() override {
-        const std::lock_guard<MutexType> lock(m_IndexSemaphore);
+        const std::lock_guard<MutexType> lock(m_IndexMutex);
         m_isReadingInput = false;
       };
 
-      const bool isDone() override {
-        const std::lock_guard<MutexType> lock(m_IndexSemaphore);
-        return m_isReadingInput;
+      void wait() override {
+        // pass
       };
-
     };
 
-    
+
   }
 }

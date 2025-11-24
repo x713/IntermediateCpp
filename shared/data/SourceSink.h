@@ -16,30 +16,7 @@ namespace lab {
   namespace data {
 
     using lab::util::Utils;
-    /*
-      enum class IOStatus {
-        IOOK = 0,
-        IOEOF,
-        IOFAIL,
-        IORINGFULL, // WRITE BUFF FULL
-        IONEXTBUSY, // READ BUFF NOT RDY
-      };
 
-      class IData {};
-      class IDataSource : public IData {};
-      class IDataSink : public IData {};
-
-      // IProcessor
-      class IProcessor {
-      public:
-
-        // writeLine
-        virtual IOStatus put(IDataSink p_data) abstract;
-        virtual IOStatus get(IDataSource p_data) = 0;
-        virtual void close() = 0;
-      };
-
-  */
 
     class FileDataSink : public IDataSink {
       std::string m_inFilename{};
@@ -80,7 +57,7 @@ namespace lab {
 
         m_ofstr->write(p_buf, static_cast<std::streamsize>(p_count));
 
-        if(m_ofstr->fail()){
+        if (m_ofstr->fail()) {
           return IOStatus::IOFAIL;
         }
 
