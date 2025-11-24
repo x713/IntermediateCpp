@@ -19,93 +19,102 @@
     <Filter Include="Header Files\app">
       <UniqueIdentifier>{597b5c16-8e2c-4082-9efa-25958c65c44b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\app\cmds">
-      <UniqueIdentifier>{4608bbd1-25e8-43ff-9987-6ec098f54db9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\shared">
-      <UniqueIdentifier>{ab9516af-1c94-4c84-8502-577949dd1899}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\shared\buffer">
-      <UniqueIdentifier>{e8291453-e356-43e0-a6fb-ed0d1a4b6bf1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\shared\cli_processor">
-      <UniqueIdentifier>{8e966782-dfa6-49d4-90a1-bca3242340de}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\shared\cli_processor\doc">
-      <UniqueIdentifier>{7680bfb4-5490-46e8-9508-a8d2757e56a8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\shared\workers">
-      <UniqueIdentifier>{1aabb646-78fb-4622-b339-2652d0fb92ec}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\shared\ipc">
-      <UniqueIdentifier>{8f74cf7c-6344-47b1-b3d8-cb53f7630165}</UniqueIdentifier>
-    </Filter>
     <Filter Include="UML">
       <UniqueIdentifier>{b437ad5c-464d-4c41-ba88-b7af3bf113eb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\shared\ipc\tests">
+    <Filter Include="Header Files\core">
+      <UniqueIdentifier>{ab9516af-1c94-4c84-8502-577949dd1899}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\core\workers">
+      <UniqueIdentifier>{1aabb646-78fb-4622-b339-2652d0fb92ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\core\ipc">
+      <UniqueIdentifier>{8f74cf7c-6344-47b1-b3d8-cb53f7630165}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\core\ipc\tests">
       <UniqueIdentifier>{be5ce761-3a2f-464c-95c1-dbd794725283}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\core\data">
+      <UniqueIdentifier>{764cb751-e8c1-4cdd-8ed6-50e509fdaf2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\core\cli">
+      <UniqueIdentifier>{8e966782-dfa6-49d4-90a1-bca3242340de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\core\cli\doc">
+      <UniqueIdentifier>{7680bfb4-5490-46e8-9508-a8d2757e56a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\app\commands">
+      <UniqueIdentifier>{4608bbd1-25e8-43ff-9987-6ec098f54db9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\core\proc">
+      <UniqueIdentifier>{e8291453-e356-43e0-a6fb-ed0d1a4b6bf1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Senorra.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="shared\cli_processor\CLIProcessor.cpp">
-      <Filter>Header Files\shared\cli_processor</Filter>
+    <ClCompile Include="core\cli\CLIProcessor.cpp">
+      <Filter>Header Files\core\cli</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="app\cmds\MainCommand.h">
-      <Filter>Header Files\app\cmds</Filter>
-    </ClInclude>
-    <ClInclude Include="shared\buffer\IProcessor.h">
-      <Filter>Header Files\shared\buffer</Filter>
-    </ClInclude>
-    <ClInclude Include="shared\cli_processor\docs\CLIExamples.h">
-      <Filter>Header Files\shared\cli_processor\doc</Filter>
-    </ClInclude>
-    <ClInclude Include="shared\cli_processor\CLIState.h">
-      <Filter>Header Files\shared\cli_processor</Filter>
-    </ClInclude>
-    <ClInclude Include="shared\cli_processor\CLIProcessor.h">
-      <Filter>Header Files\shared\cli_processor</Filter>
-    </ClInclude>
-    <ClInclude Include="shared\cli_processor\ComTypes.h">
-      <Filter>Header Files\shared\cli_processor</Filter>
-    </ClInclude>
-    <ClInclude Include="shared\workers\JobWorker.h">
-      <Filter>Header Files\shared\workers</Filter>
-    </ClInclude>
     <ClInclude Include="util\Utils.h">
       <Filter>Header Files\util</Filter>
     </ClInclude>
-    <ClInclude Include="shared\buffer\ThreadedDataProcessor.h">
-      <Filter>Header Files\shared\buffer</Filter>
+    <ClInclude Include="shared\data\NetworkDataIO.h">
+      <Filter>Header Files\core\data</Filter>
     </ClInclude>
-    <ClInclude Include="shared\buffer\LineBuffer.h">
-      <Filter>Header Files\shared\buffer</Filter>
+    <ClInclude Include="shared\data\FileDataIO.h">
+      <Filter>Header Files\core\data</Filter>
     </ClInclude>
-    <ClInclude Include="shared\ipc\ipc_sfile.h">
-      <Filter>Header Files\shared\ipc</Filter>
+    <ClInclude Include="app\commands\CopyCommand.h">
+      <Filter>Header Files\app\commands</Filter>
     </ClInclude>
-    <ClInclude Include="shared\ipc\tests.h">
-      <Filter>Header Files\shared\ipc\tests</Filter>
+    <ClInclude Include="app\commands\IPCClientCommand.h">
+      <Filter>Header Files\app\commands</Filter>
     </ClInclude>
-    <ClInclude Include="shared\ipc\ipc_mutex.h">
-      <Filter>Header Files\shared\ipc</Filter>
+    <ClInclude Include="app\commands\IPCServerCommand.h">
+      <Filter>Header Files\app\commands</Filter>
     </ClInclude>
-    <ClInclude Include="shared\data\SourceSink.h">
-      <Filter>Header Files\shared\buffer</Filter>
+    <ClInclude Include="core\data\IDataIO.h">
+      <Filter>Header Files\core\data</Filter>
     </ClInclude>
-    <ClInclude Include="shared\buffer\ProcessorFactory.h">
-      <Filter>Header Files\shared\buffer</Filter>
+    <ClInclude Include="core\cli\CLIProcessor.h">
+      <Filter>Header Files\core\cli</Filter>
     </ClInclude>
-    <ClInclude Include="shared\buffer\SCopyProc.h">
-      <Filter>Header Files\shared\buffer</Filter>
+    <ClInclude Include="core\cli\CLIState.h">
+      <Filter>Header Files\core\cli</Filter>
     </ClInclude>
-    <ClInclude Include="shared\buffer\IOStatus.h">
-      <Filter>Header Files\shared\buffer</Filter>
+    <ClInclude Include="core\cli\ComTypes.h">
+      <Filter>Header Files\core\cli</Filter>
+    </ClInclude>
+    <ClInclude Include="core\cli\docs\CLIExamples.h">
+      <Filter>Header Files\core\cli\doc</Filter>
+    </ClInclude>
+    <ClInclude Include="core\workers\JobWorker.h">
+      <Filter>Header Files\core\workers</Filter>
+    </ClInclude>
+    <ClInclude Include="core\proc\IProcessor.h">
+      <Filter>Header Files\core\proc</Filter>
+    </ClInclude>
+    <ClInclude Include="core\proc\LineBuffer.h">
+      <Filter>Header Files\core\proc</Filter>
+    </ClInclude>
+    <ClInclude Include="core\proc\ProcessorFactory.h">
+      <Filter>Header Files\core\proc</Filter>
+    </ClInclude>
+    <ClInclude Include="core\proc\ThreadedDataProcessor.h">
+      <Filter>Header Files\core\proc</Filter>
+    </ClInclude>
+    <ClInclude Include="core\proc\WinIPCProcessor.h">
+      <Filter>Header Files\core\proc</Filter>
+    </ClInclude>
+    <ClInclude Include="core\ipc\ipc_mutex.h">
+      <Filter>Header Files\core\ipc</Filter>
+    </ClInclude>
+    <ClInclude Include="core\ipc\tests.h">
+      <Filter>Header Files\core\ipc\tests</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

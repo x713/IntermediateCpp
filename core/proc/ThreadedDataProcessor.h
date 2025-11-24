@@ -13,13 +13,14 @@
 #include "LineBuffer.h"
 
 
-#include "../../shared/ipc/ipc_mutex.h"
+#include "../../core/ipc/ipc_mutex.h"
 #include "../../util/Utils.h"
 
 namespace lab {
-  namespace data {
+  namespace processing {
 
     using lab::util::Utils;
+    using lab::data::LineBuffer;
 
     // Threaded Data Processor with Ring Buffer Pool
     // TODO : TEST: PerfTest different buffer sizes
@@ -51,7 +52,6 @@ namespace lab {
       // Transmission signaling
       bool m_isReadingInput = false;
 
-
     public:
 
       ThreadedDataProcessor() {
@@ -80,7 +80,7 @@ namespace lab {
 
       IOStatus operator<< (IDataSource* p_dataSource) {
         if (!p_dataSource) {
-          return IOStatus::IOFAILPTR;
+          return IOStatus::NullPointer;
         }
         size_t nextWriteIdx;
 
@@ -90,7 +90,7 @@ namespace lab {
           nextWriteIdx = nextIdx(m_writeIdx);
           if (nextWriteIdx == m_readIdx) {
             // Buffer is still full
-            return IOStatus::IORINGFULL; // Status::FullBuffer
+            return IOStatus::RingBufferFull; // Status::FullBuffer
           }
 
         } // END CRITICAL SECTION
@@ -101,7 +101,7 @@ namespace lab {
         const std::lock_guard<MutexType> lock(m_IndexMutex);
         m_writeIdx = nextWriteIdx;
 
-        if (IOStatus::IOEOF == result) {
+        if (IOStatus::EndOfFile == result) {
           m_isReadingInput = false;
         }
 
@@ -110,7 +110,7 @@ namespace lab {
 
       IOStatus operator>> (IDataSink* p_dataSink) {
         if (!p_dataSink) {
-          return IOStatus::IOFAILPTR;
+          return IOStatus::NullPointer;
         }
 
         const size_t nextReadIdx = nextIdx(m_readIdx);
@@ -121,11 +121,11 @@ namespace lab {
           if (m_writeIdx == nextReadIdx) {
             if (m_isReadingInput) {
               // nextBuffer is still writing
-              return IOStatus::IONEXTBUSY;
+              return IOStatus::NextBufferBusy;
             }
             else {
               // reached end of the data
-              return IOStatus::IOEOF;
+              return IOStatus::EndOfFile;
             }
           }
 
@@ -136,7 +136,7 @@ namespace lab {
         // write data from pool to stream
         m_pool[m_readIdx] >> p_dataSink;
 
-        return IOStatus::IOOK;
+        return IOStatus::Ok;
       }
 
       void close() override {

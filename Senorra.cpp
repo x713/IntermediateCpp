@@ -1,5 +1,7 @@
-#include "shared/cli_processor/CLIProcessor.h"
-#include "app/cmds/MainCommand.h"
+#include "core/cli/CLIProcessor.h"
+#include "app/commands/CopyCommand.h"
+#include "app/commands/IPCServerCommand.h"
+#include "app/commands/IPCClientCommand.h"
 
 using lab::cli::CLIProcessor;
 using lab::cli::CLIState;

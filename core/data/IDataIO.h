@@ -1,18 +1,22 @@
 #pragma once
 
-#include "IOStatus.h"
+#include "../IOStatus.h"
 
 //
 //
 //
 namespace lab {
   namespace data {
-
     /*
         class IData {
         public:
           virtual bool fail() = 0;
           virtual ~IData() {};
+        };
+
+        class IDataSourceSink : public IDataSink, IDataSource {
+        public:
+        IDataSourceSink() default;
         };
     */
 
@@ -32,15 +36,5 @@ namespace lab {
       virtual bool eof() = 0;
       virtual ~IDataSource() {};
     };
-
-    class IProcessor {
-    public:
-      virtual IOStatus operator>>(IDataSink* p_dataSink) = 0;
-      virtual IOStatus operator<<(IDataSource* p_dataSource) = 0;
-      virtual void close() = 0;
-      virtual void wait() = 0;
-    };
-
-
   }
 }

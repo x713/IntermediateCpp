@@ -13,7 +13,7 @@
 #include "LineBuffer.h"
 
 
-#include "../../shared/ipc/ipc_mutex.h"
+#include "../../core/ipc/ipc_mutex.h"
 #include "../../util/Utils.h"
 
 #include <windows.h>
@@ -30,7 +30,7 @@
 
 
 namespace lab {
-  namespace data {
+  namespace processing {
 
     using lab::data::NamedWinMutex;
     using lab::util::Utils;
@@ -43,7 +43,7 @@ namespace lab {
     const std::wstring& CLIENT_READ_EVENT_NAME = L"Local\\SnTransferClientReadEvent";
 
     // Buffer size
-    constexpr size_t BUFFER_SIZE = 64 * 1024;
+    constexpr size_t c_bufferSize = 64 * 1024;
 
     // Windows inter-process copy processor
     template<size_t PoolSize>
@@ -56,52 +56,65 @@ namespace lab {
 
       template<size_t BufferPool>
       struct SharedData {
+        size_t dataSize[BufferPool] = { 0 };
+        // TODO : share size for monitoring copy progress?
+        // long long fileSize = 0;        
         size_t writeIdx = 0;
         size_t readIdx = BufferPool - 1;
-
-        size_t dataSize[BufferPool] = { 0 };
-        //long long fileSize = 0; 
 
         bool isReadingInput = false;
         bool transferFinished = false;
       };
 
-      // Total shared memory size: Header + Buffer pool
-      static constexpr size_t TOTAL_SHARED_SIZE = sizeof(SharedData<c_bufferPool>) + ((sizeof(size_t) + BUFFER_SIZE) * c_bufferPool);
+      // Total shared memory size: Header + Buffer pool 
+      // Each buffer is additionally storing number of bytes consumed
+      // so for each buufer in pool [buff_size = buf_size + 1*size_t]      
+      static constexpr size_t TOTAL_SHARED_SIZE = 
+       sizeof(SharedData<c_bufferPool>) + ((sizeof(size_t) + c_bufferSize) * c_bufferPool);
 
     private:
-      SharedData<c_bufferPool> m_sharedData;
+      // Read / Write indexes stored in SharedData structure
+      SharedData<c_bufferPool>* m_pHeader = nullptr;
 
+      // Pointer to the start of the tripple buffer area
+      BYTE* m_pBufferData = nullptr; 
+
+      // Are we sending bytes or receiving
       bool m_isServer = true;
 
+      // Windows OS SharedMemory Handler
       HANDLE m_hMapFile = NULL;
+
+      // Sync mutex
+      std::shared_ptr<NamedWinMutex> m_IndexMutex = nullptr;
+
+      // Events for tripple - buffer signalling (unused)
+      // TODO : (tweaks)
       HANDLE m_hWroteEvent = NULL;
       HANDLE m_hReadEvent = NULL;
-      std::shared_ptr<NamedWinMutex> m_IndexMutex;
-
-      // Read / Write indexes
-      // Sync mutex
-
-      SharedData<c_bufferPool>* m_pHeader = nullptr;
-      BYTE* m_pBufferData = nullptr; // Pointer to the start of the data area
 
     public:
 
       WinIPCProcessor(bool p_isServer = true) :
         m_isServer(p_isServer) {
 
+        bool result = false;
+
         try {
           if (m_isServer) {
-            createSharedMemory();
+            result = createSharedMemory();
           }
           else {
-            openSharedMemory();
+            result = openSharedMemory();
           }
         }
         catch (const std::exception& /*e*/) {
           // Optional: Log the exception message (e.what())
           // Utils::Log("Exception: ", e.what());
           Utils::Log("Uninvited V.");
+        }
+        if(!result){
+          Utils::Log("WinIPCProcessor : Failed to initialize .");
         }
       }
 
@@ -114,10 +127,10 @@ namespace lab {
       }
 
 
-
+      // read data from source and save into tripple buffer
       IOStatus operator<< (IDataSource* p_dataSource) {
         if (!p_dataSource) {
-          return IOStatus::IOFAILPTR;
+          return IOStatus::NullPointer;
         }
         size_t nextWriteIdx;
 
@@ -131,7 +144,7 @@ namespace lab {
           nextWriteIdx = nextIdx(m_writeIdx);
           if (nextWriteIdx == m_readIdx) {
             // Buffer is still full
-            return IOStatus::IORINGFULL; // Status::FullBuffer
+            return IOStatus::RingBufferFull; // Status::FullBuffer
           }
 
         } // END CRITICAL SECTION
@@ -142,7 +155,7 @@ namespace lab {
         const std::lock_guard<NamedWinMutex> lock(*m_IndexMutex);
         m_pHeader->writeIdx = nextWriteIdx;
 
-        if (IOStatus::IOEOF == result || IOStatus::IOFAIL == result) {
+        if (IOStatus::EndOfFile == result || IOStatus::Failed == result) {
           m_pHeader->isReadingInput = false;
         }
 
@@ -150,14 +163,14 @@ namespace lab {
       }
 
 
-      // write data from data source to shared memory
+      // write data from data source to shared tripple buffer
       IOStatus write_to_shared(IDataSource* p_dataSource) {
         // Set pointer to the start of the data area
-        auto p_bufferStart = (m_pBufferData + m_pHeader->writeIdx * (BUFFER_SIZE + sizeof(size_t)));
-        auto p_bufferSize = (p_bufferStart + BUFFER_SIZE);
+        auto p_bufferStart = (m_pBufferData + m_pHeader->writeIdx * (c_bufferSize + sizeof(size_t)));
+        auto p_bufferSize = (p_bufferStart + c_bufferSize);
 
         //p_dataSource->read(p_bufferStart, p_bufferSize);
-        p_dataSource->read(reinterpret_cast<char*>(p_bufferStart), BUFFER_SIZE);
+        p_dataSource->read(reinterpret_cast<char*>(p_bufferStart), c_bufferSize);
 
 
         // actual read
@@ -168,28 +181,28 @@ namespace lab {
           Utils::LogDebug("EOF. Read bytes:", ' ');
           Utils::LogDebug(actual_read_count);
 
-          return IOStatus::IOEOF;
+          return IOStatus::EndOfFile;
         }
         else if (p_dataSource->fail()) {
           // read less than p_bufferSize, but not EOF
-          Utils::LogDebug("FAIL : Read less than " + std::to_string(BUFFER_SIZE) + " bytes, but not EOF", ' ');
+          Utils::LogDebug("FAIL : Read less than " + std::to_string(c_bufferSize) + " bytes, but not EOF", ' ');
           Utils::LogDebug(actual_read_count);
 
-          return IOStatus::IOFAIL;
+          return IOStatus::Failed;
         }
 
         //PrintBuffer();
 
-        return IOStatus::IOOK;
+        return IOStatus::Ok;
       }
 
-      // read data from shared memory to data sink
+      // read data from tripple buffer and send to data sink
       IOStatus operator>> (IDataSink* p_dataSink) {
         if (!p_dataSink) {
-          return IOStatus::IOFAILPTR;
+          return IOStatus::NullPointer;
         }
         if (!m_pHeader) {
-          return IOStatus::IOMEMFAIL;
+          return IOStatus::MemoryAllocationFailed;
         }
 
         const auto& readIdx = m_pHeader->readIdx;
@@ -204,12 +217,12 @@ namespace lab {
           if (writeIdx == nextReadIdx) {
             if (isReadingInput) {
               // nextBuffer is still writing
-              return IOStatus::IONEXTBUSY;
+              return IOStatus::NextBufferBusy;
             }
             else {
               // reached end of the data
               m_pHeader->transferFinished = true;
-              return IOStatus::IOEOF;
+              return IOStatus::Ok;
             }
           }
 
@@ -226,14 +239,15 @@ namespace lab {
         return result;
       }
 
+      // read data from shared memory
       IOStatus read_from_shared(IDataSink* p_dataSink) {
         if (!p_dataSink) {
-          return IOStatus::IOFAILPTR;
+          return IOStatus::NullPointer;
         }
 
         // read data from shared memory to data sink
         const auto& cacheBufferSize = m_pHeader->dataSize[m_pHeader->readIdx];
-        const auto& p_bufferStart = (m_pBufferData + m_pHeader->readIdx * (BUFFER_SIZE + sizeof(size_t)));
+        const auto& p_bufferStart = (m_pBufferData + m_pHeader->readIdx * (c_bufferSize + sizeof(size_t)));
 
         if (cacheBufferSize) {
           //p_dataSink->write(p_bufferStart, cacheBufferSize);
@@ -243,9 +257,10 @@ namespace lab {
           Utils::LogDebug("WARN : Write buffer 0 zise, skip writing");
         }
 
-        return IOStatus::IOOK;
+        return IOStatus::Ok;
       }
 
+      // close data streams and set transmission flags 
       void close() override {
         const std::lock_guard<NamedWinMutex> lock(*m_IndexMutex);
         m_pHeader->isReadingInput = false;
@@ -253,6 +268,8 @@ namespace lab {
       };
 
       ~WinIPCProcessor() {
+        // TODO : pack into RAII
+        // 
         if (m_pHeader) {
           UnmapViewOfFile(m_pHeader);
         }
@@ -269,6 +286,7 @@ namespace lab {
       }
 
 
+      // create Windows OS shared file mem segmets (server side)
       bool createSharedMemory() {
         // 1. Create shared memory
         m_hMapFile = CreateFileMappingW(
@@ -323,7 +341,7 @@ namespace lab {
         return true;
       }
 
-
+      // opens Windows OS shared file mem segmets (Client side)
       bool openSharedMemory() {
         // 1. Open shared memory
         m_hMapFile = OpenFileMappingW(FILE_MAP_ALL_ACCESS, FALSE, SHARED_MEM_NAME.c_str());
@@ -361,7 +379,9 @@ namespace lab {
         return true;
       }
 
+      // Wait until data consumed by receiver
       void wait() override {
+        if (!m_isServer) return;
         if (!m_pHeader) return;
 
         // wait for data be consumed

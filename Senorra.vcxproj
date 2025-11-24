@@ -127,26 +127,28 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="core\cli\CLIProcessor.cpp" />
     <ClCompile Include="Senorra.cpp" />
-    <ClCompile Include="shared\cli_processor\CLIProcessor.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="app\cmds\MainCommand.h" />
-    <ClInclude Include="shared\buffer\IOStatus.h" />
-    <ClInclude Include="shared\buffer\LineBuffer.h" />
-    <ClInclude Include="shared\buffer\ProcessorFactory.h" />
-    <ClInclude Include="shared\buffer\SCopyProc.h" />
-    <ClInclude Include="shared\buffer\ThreadedDataProcessor.h" />
-    <ClInclude Include="shared\buffer\IProcessor.h" />
-    <ClInclude Include="shared\cli_processor\CLIProcessor.h" />
-    <ClInclude Include="shared\cli_processor\CLIState.h" />
-    <ClInclude Include="shared\cli_processor\ComTypes.h" />
-    <ClInclude Include="shared\cli_processor\docs\CLIExamples.h" />
-    <ClInclude Include="shared\data\SourceSink.h" />
-    <ClInclude Include="shared\ipc\tests.h" />
-    <ClInclude Include="shared\ipc\ipc_mutex.h" />
-    <ClInclude Include="shared\ipc\ipc_sfile.h" />
-    <ClInclude Include="shared\workers\JobWorker.h" />
+    <ClInclude Include="app\commands\CopyCommand.h" />
+    <ClInclude Include="app\commands\IPCServerCommand.h" />
+    <ClInclude Include="app\commands\IPCClientCommand.h" />
+    <ClInclude Include="core\cli\CLIProcessor.h" />
+    <ClInclude Include="core\cli\CLIState.h" />
+    <ClInclude Include="core\cli\ComTypes.h" />
+    <ClInclude Include="core\cli\docs\CLIExamples.h" />
+    <ClInclude Include="core\data\IDataIO.h" />
+    <ClInclude Include="core\ipc\ipc_mutex.h" />
+    <ClInclude Include="core\ipc\tests.h" />
+    <ClInclude Include="core\proc\IProcessor.h" />
+    <ClInclude Include="core\proc\LineBuffer.h" />
+    <ClInclude Include="core\proc\ProcessorFactory.h" />
+    <ClInclude Include="core\proc\ThreadedDataProcessor.h" />
+    <ClInclude Include="core\proc\WinIPCProcessor.h" />
+    <ClInclude Include="core\workers\JobWorker.h" />
+    <ClInclude Include="shared\data\NetworkDataIO.h" />
+    <ClInclude Include="shared\data\FileDataIO.h" />
     <ClInclude Include="util\Utils.h" />
   </ItemGroup>
   <ItemGroup>

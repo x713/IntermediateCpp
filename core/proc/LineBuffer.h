@@ -11,7 +11,7 @@ namespace lab {
 
     using lab::util::Utils;
     using lab::data::IOStatus;
-    using lab::data::IProcessor;
+    using lab::processing::IProcessor;
 
     class LineBuffer {
 
@@ -23,10 +23,9 @@ namespace lab {
       std::streamsize cacheBufferSize = 0;
 
     public:
-      //IOStatus operator<<(std::ifstream& p_ifstream) {
       IOStatus operator<<(IDataSource *p_dataSource) {
         if(!p_dataSource){
-          return IOStatus::IOFAILPTR;
+          return IOStatus::NullPointer;
         }
         p_dataSource->read(m_buffer.data(), c_bufferSize);
 
@@ -38,7 +37,7 @@ namespace lab {
           Utils::LogDebug("EOF. Read bytes:", ' ');
           Utils::LogDebug(actual_read_count);
 
-          return IOStatus::IOEOF;
+          return IOStatus::EndOfFile;
         }
         else if (p_dataSource->fail()) {
 
@@ -46,12 +45,12 @@ namespace lab {
           Utils::LogDebug("FAIL : Read less than 256, but not EOF", ' ');
           Utils::LogDebug(actual_read_count);
 
-          return IOStatus::IOFAIL;
+          return IOStatus::Failed;
         }
 
         //PrintBuffer();
 
-        return IOStatus::IOOK;
+        return IOStatus::Ok;
       }
 
       void operator>>(IDataSink* p_dataSink) {
@@ -68,9 +67,11 @@ namespace lab {
         //PrintBuffer();
       }
 
+
       void reset() {
         cacheBufferSize = 0;
       }
+
 
       void PrintBuffer() {
 #ifdef _DEBUG

@@ -6,15 +6,16 @@
 #include <array> 
 
 
-#include "../cli_processor/ComTypes.h"
+#include "../cli/ComTypes.h"
 
-#include "../buffer/IProcessor.h"
-#include "../data/SourceSink.h"
+#include "../proc/IProcessor.h"
+#include "../data/IDataIO.h"
+#include "../data/FileDataIO.h"
 #include "../../util/Utils.h"
 
 
 namespace lab {
-  namespace worker {
+  namespace workers {
 
     using lab::data::IProcessor;
     using lab::data::IOStatus;
@@ -93,7 +94,7 @@ namespace lab {
       void process() override {
 
         FileDataSource fsd(getFilename());
-        if(fsd.open() != IOStatus::IOOK ){
+        if(fsd.open() != IOStatus::Ok ){
           return;
         }
 
@@ -111,12 +112,12 @@ namespace lab {
 
           auto result = *m_processor << p_dataSource;
 
-          if (IOStatus::IORINGFULL == result) {
+          if (IOStatus::RingBufferFull == result) {
             // TODO : sync spin lock with cv
             continue;
           }
 
-          if (IOStatus::IOEOF == result) {
+          if (IOStatus::EndOfFile == result) {
 
             done = true;
             break;
@@ -147,7 +148,7 @@ namespace lab {
       void process() override {
 
         FileDataSink fsd(getFilename());
-        if (fsd.open() != IOStatus::IOOK) {
+        if (fsd.open() != IOStatus::Ok) {
           return;
         }
 
@@ -161,12 +162,12 @@ namespace lab {
         while (!done) {
           IOStatus result = *m_processor >> p_dataSink;
 
-          if (IOStatus::IONEXTBUSY == result) {
+          if (IOStatus::NextBufferBusy == result) {
             // TODO : wait?
             continue;
           }
 
-          if (IOStatus::IOEOF == result) {
+          if (IOStatus::EndOfFile == result) {
             done = true;
             break;
           }
@@ -176,57 +177,5 @@ namespace lab {
 
     };
 
-     /*
-    class IPCServerJob : public ReaderJob{  
-    public:
-      IPCServerJob(const std::string& p_filename,
-        const std::shared_ptr<IProcessor>& p_itc_processor)
-        : ReaderJob(p_filename, p_itc_processor) {
-        Utils::LogDebug(" IPCServerJob ctor");
-      }
-    };
-
-    class IPCClientJob : public FileJob {
-    public:
-      IPCClientJob(const std::string& p_filename,
-        const std::shared_ptr<IProcessor>& ipc_processor)
-        : FileJob(p_filename, ipc_processor) {
-        Utils::LogDebug(" IPCClientJob ctor");
-      }
-
-      void process() override {
-        Utils::LogDebug(" IPCClientJob process ");
-
-        FileDataSink fsd(getFilename());
-        if (fsd.open() != IOStatus::IOOK) {
-          return;
-        }
-
-        produce(&fsd);
-
-        Utils::Log(" WriterJob processed");
-      }
-
-      void produce(FileDataSink* p_dataSink) {
-        bool done = false;
-        while (!done) {
-          IOStatus result = *m_processor >> p_dataSink;
-
-          if (IOStatus::IONEXTBUSY == result) {
-            // TODO : wait?
-            continue;
-          }
-
-          if (IOStatus::IOEOF == result) {
-            done = true;
-            break;
-          }
-
-        }
-
-      }
-
-    };
-   */
   }
 }

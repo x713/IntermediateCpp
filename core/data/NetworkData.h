@@ -18,27 +18,21 @@ namespace lab {
     using lab::util::Utils;
 
 
-    class FileDataSink : public IDataSink {
-      std::string m_inFilename{};
+    class NetworkDataSink : public IDataSink {
+      std::string m_outHostname{};
       std::shared_ptr<IProcessor> m_buffer = nullptr;
-      std::shared_ptr<std::ofstream> m_ofstr = nullptr;
       bool m_failed = false;
 
     public:
-      FileDataSink(std::string p_outFilename)
-        : m_inFilename(p_outFilename)
+      NetworkDataSink(std::string p_outHostname)
+        : m_outHostname(p_outHostname)
       {
 
       }
 
 
       IOStatus open() {
-        if (m_ofstr) {
-          if (m_ofstr->is_open()) {
-            m_ofstr->close();
-          }
-          m_ofstr = nullptr;
-        }
+        
         // open file for reading
         m_ofstr = std::make_shared<std::ofstream>(m_inFilename, std::ios::binary);
         if (!m_ofstr->is_open()) {
@@ -70,7 +64,7 @@ namespace lab {
 
     };
 
-    class FileDataSource : public IDataSource {
+    class NetworkDataSource : public IDataSource {
       std::string m_inFilename{};
       std::shared_ptr<IProcessor> m_buffer = nullptr;
       std::shared_ptr <std::ifstream> m_istrm = nullptr;
