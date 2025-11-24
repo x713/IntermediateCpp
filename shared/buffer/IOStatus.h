@@ -11,7 +11,7 @@ namespace lab {
       IONEXTBUSY, // READ BUFF NOT RDY
       IOFAILPTR,
       IOFAILOPEN,
-      IOEOCLIENTRS, // END OF TRANSMISION FROM CLIENT
+      IOMEMFAIL,
     };
   }
 }

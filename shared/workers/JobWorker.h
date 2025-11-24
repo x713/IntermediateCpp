@@ -128,6 +128,9 @@ namespace lab {
           }
         }
 
+        Utils::Log(" Server have read whole file awaiting for consumer");
+        m_processor->wait();
+
       }
     };
 
@@ -173,7 +176,7 @@ namespace lab {
 
     };
 
-
+     /*
     class IPCServerJob : public ReaderJob{  
     public:
       IPCServerJob(const std::string& p_filename,
@@ -219,14 +222,11 @@ namespace lab {
             break;
           }
 
-          Utils::Log(" Data read awaiting for consumer");
-          m_processor->wait();
-
         }
 
       }
 
     };
-
+   */
   }
 }

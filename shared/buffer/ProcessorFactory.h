@@ -42,8 +42,12 @@ namespace lab {
         return result;
       }
 
-      static std::shared_ptr<WinIPCProcessor<c_defaultPoolSize>> createIntersystemProcessor() {
-        auto result = std::make_shared<WinIPCProcessor<c_defaultPoolSize>>();
+      static std::shared_ptr<WinIPCProcessor<c_defaultPoolSize>> createISysProcessorServer() {
+        auto result = std::make_shared<WinIPCProcessor<c_defaultPoolSize>>(true);
+        return result;
+      }
+      static std::shared_ptr<WinIPCProcessor<c_defaultPoolSize>> createISysProcessorClient() {
+        auto result = std::make_shared<WinIPCProcessor<c_defaultPoolSize>>(false);
         return result;
       }
     };

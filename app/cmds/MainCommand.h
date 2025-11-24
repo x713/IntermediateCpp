@@ -21,8 +21,8 @@ using lab::data::CopyProcessorFactory;
 using lab::worker::FileJob;
 using lab::worker::ReaderJob;
 using lab::worker::WriterJob;
-using lab::worker::IPCServerJob;
-using lab::worker::IPCClientJob;
+//using lab::worker::IPCServerJob;
+//using lab::worker::IPCClientJob;
 
 using lab::util::Utils;
 
@@ -76,10 +76,10 @@ CLIState::State SharedServerCommand(CLI_Vector args)
 
   Utils::Log("Input: " + in_filename);
 
-  auto ipc_processor = CopyProcessorFactory::createIntersystemProcessor();
+  auto ipc_processor = CopyProcessorFactory::createISysProcessorServer();
 
-  IPCServerJob server_job{ in_filename, ipc_processor };
-  //IPCReaderJob server_job{ in_filename, ipc_processor };
+  //IPCServerJob server_job{ in_filename, ipc_processor };
+  ReaderJob server_job{ in_filename, ipc_processor };
 
   server_job.process();
 
@@ -102,9 +102,10 @@ CLIState::State SharedClientCommand(CLI_Vector args)
 
   Utils::Log("Output: " + out_filename);
 
-  auto ipc_buffer = CopyProcessorFactory::createIntersystemProcessor();
+  auto ipc_buffer = CopyProcessorFactory::createISysProcessorClient();
 
-  IPCClientJob client_job{ out_filename, ipc_buffer };
+  WriterJob client_job{ out_filename, ipc_buffer };
+  //IPCClientJob client_job{ out_filename, ipc_buffer };
 
   client_job.process();
 

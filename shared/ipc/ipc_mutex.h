@@ -18,7 +18,7 @@ namespace lab {
 
 
 
-    const std::wstring& CONTROL_MUTEX_NAME = L"Global\\TransferControlMutex";
+    //const std::wstring& CONTROL_MUTEX_NAME = L"Global\\TransferControlMutex";
 
     // Provides a system-wide, recursive, named lock. 
     // This class satisfies requirements of C++11 concept "Lockable",

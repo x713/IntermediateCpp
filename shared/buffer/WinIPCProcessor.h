@@ -36,11 +36,11 @@ namespace lab {
     using lab::util::Utils;
 
     // IPC names  
-    const std::wstring& SHARED_MEM_NAME = L"Global\\TransferMemory";
+    const std::wstring& SHARED_MEM_NAME = L"Local\\SnTransferMemory";
 
     // Events names
-    const std::wstring& SERVER_WROTE_EVENT_NAME = L"Global\\TransferServerWroteEvent";
-    const std::wstring& CLIENT_READ_EVENT_NAME = L"Global\\TransferClientReadEvent";
+    const std::wstring& SERVER_WROTE_EVENT_NAME = L"Local\\SnTransferServerWroteEvent";
+    const std::wstring& CLIENT_READ_EVENT_NAME = L"Local\\SnTransferClientReadEvent";
 
     // Buffer size
     constexpr size_t BUFFER_SIZE = 64 * 1024;
@@ -187,6 +187,9 @@ namespace lab {
       IOStatus operator>> (IDataSink* p_dataSink) {
         if (!p_dataSink) {
           return IOStatus::IOFAILPTR;
+        }
+        if (!m_pHeader) {
+          return IOStatus::IOMEMFAIL;
         }
 
         const auto& readIdx = m_pHeader->readIdx;
@@ -364,6 +367,7 @@ namespace lab {
         // wait for data be consumed
         while (!m_pHeader->transferFinished) {
           // or std::this_thread::sleep_for
+          // or cumullative deadline
           Sleep(1);
         }
       }
