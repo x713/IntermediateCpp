@@ -35,7 +35,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v145</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -48,7 +48,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v145</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -138,6 +138,7 @@
     <ClInclude Include="core\cli\CLIState.h" />
     <ClInclude Include="core\cli\ComTypes.h" />
     <ClInclude Include="core\cli\docs\CLIExamples.h" />
+    <ClInclude Include="core\data\FileDataIO.h" />
     <ClInclude Include="core\data\IDataIO.h" />
     <ClInclude Include="core\ipc\ipc_mutex.h" />
     <ClInclude Include="core\ipc\tests.h" />
@@ -145,10 +146,10 @@
     <ClInclude Include="core\proc\LineBuffer.h" />
     <ClInclude Include="core\proc\ProcessorFactory.h" />
     <ClInclude Include="core\proc\ThreadedDataProcessor.h" />
-    <ClInclude Include="core\proc\WinIPCProcessor.h" />
+    <ClInclude Include="core\proc\win\WinIPCProcessor.h" />
+    <ClInclude Include="core\proc\win\Wrapper.h" />
     <ClInclude Include="core\workers\JobWorker.h" />
     <ClInclude Include="shared\data\NetworkDataIO.h" />
-    <ClInclude Include="shared\data\FileDataIO.h" />
     <ClInclude Include="util\Utils.h" />
   </ItemGroup>
   <ItemGroup>

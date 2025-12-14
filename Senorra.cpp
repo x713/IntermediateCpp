@@ -9,6 +9,7 @@ using lab::cli::CLI_CommandSet;
 
 int main(const int argc, const char* argv[])
 {
+  std::set_terminate(Utils::custom_terminate);
 
   CLIProcessor cmdProc(argc, argv);
   cmdProc.TrimProgramName(argv[0]);

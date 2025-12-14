@@ -18,10 +18,8 @@ namespace lab {
     using lab::util::Utils;
     using lab::processing::IProcessor;
 
-
     class FileDataSink : public IDataSink {
       std::string m_outFilename{};
-      std::shared_ptr<IProcessor> m_buffer = nullptr;
       std::shared_ptr<std::ofstream> m_ofstr = nullptr;
       bool m_failed = false;
 
@@ -29,10 +27,10 @@ namespace lab {
       FileDataSink(std::string p_outFilename)
         : m_outFilename(p_outFilename)
       {
-
+				// Utils::Log("FileDataSink created for " + m_outFilename);
       }
 
-
+			// open file for writing
       IOStatus open() {
         if (m_ofstr) {
           if (m_ofstr->is_open()) {
@@ -51,6 +49,7 @@ namespace lab {
         return IOStatus::Ok;
       }
 
+			// write data to file
       virtual IOStatus write(const char* p_buf, size_t p_count) override {
         if (!m_ofstr) {
           return IOStatus::NullPointer;
@@ -71,9 +70,9 @@ namespace lab {
 
     };
 
+		// read data from file
     class FileDataSource : public IDataSource {
       std::string m_inFilename{};
-      std::shared_ptr<IProcessor> m_buffer = nullptr;
       std::shared_ptr <std::ifstream> m_istrm = nullptr;
       bool m_failed = false;
       bool m_eof = true;
@@ -85,7 +84,7 @@ namespace lab {
 
       }
 
-
+			// open file for reading
       IOStatus open() {
 
         if (m_istrm) {
@@ -98,8 +97,8 @@ namespace lab {
         m_istrm = std::make_shared<std::ifstream>(m_inFilename, std::ios::binary);
         if (!m_istrm->is_open()) {
           Utils::Log("failed to open " + m_inFilename);
-          m_buffer->close();
           m_istrm->close();
+          m_failed = true;
           return IOStatus::OpenFailed;
         }
 
@@ -108,6 +107,7 @@ namespace lab {
         return IOStatus::Ok;
       }
 
+			// read data from file
       IOStatus read(char* p_buf, size_t p_count) override {
         if (!m_istrm) {
           return IOStatus::NullPointer;
@@ -124,14 +124,17 @@ namespace lab {
         return IOStatus::Ok;
       }
 
+			// get actual read count
       std::streamsize getCount() override {
         return m_istrm->gcount();
       }
 
+			// check if read failed
       bool fail() override {
         return m_failed;
       };
 
+			// check if reached end of file
       bool eof() override {
         return m_eof;
       };

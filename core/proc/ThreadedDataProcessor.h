@@ -5,6 +5,7 @@
 #include <array>
 
 #include <mutex>
+#include <condition_variable>
 
 #include <string>
 #include <iostream> 
@@ -51,6 +52,8 @@ namespace lab {
 
       // Transmission signaling
       bool m_isReadingInput = false;
+			// Bffer available condition variable
+      std::condition_variable_any m_bufferAvailable;
 
     public:
 
@@ -68,7 +71,7 @@ namespace lab {
         m_isReadingInput = true;
       }
 
-      size_t nextIdx(const size_t p_idx) {
+      size_t nextIdx(const size_t p_idx) noexcept {
         size_t result = p_idx + 1;
         if (result >= c_bufferPool) {
           result = 0;
@@ -78,19 +81,26 @@ namespace lab {
 
 
 
-      IOStatus operator<< (IDataSource* p_dataSource) {
+      IOStatus operator<< (std::shared_ptr<IDataSource> p_dataSource) {
         if (!p_dataSource) {
           return IOStatus::NullPointer;
         }
         size_t nextWriteIdx;
 
         { // CRITICAL SECTION 
-          const std::lock_guard<MutexType> lock(m_IndexMutex);
+          std::unique_lock<MutexType> lock(m_IndexMutex);
 
           nextWriteIdx = nextIdx(m_writeIdx);
+
           if (nextWriteIdx == m_readIdx) {
             // Buffer is still full
-            return IOStatus::RingBufferFull; // Status::FullBuffer
+            // return IOStatus::RingBufferFull; // Status::FullBuffer
+          
+            // grab nextWriteIdx to update it in the loop
+            m_bufferAvailable.wait(lock, [this, &nextWriteIdx] {
+              nextWriteIdx = nextIdx(m_writeIdx);
+              return nextWriteIdx != m_readIdx;
+            });
           }
 
         } // END CRITICAL SECTION
@@ -98,17 +108,17 @@ namespace lab {
         // write data from stream to pool
         auto result = m_pool[m_writeIdx] << p_dataSource;
 
-        const std::lock_guard<MutexType> lock(m_IndexMutex);
+       std::lock_guard<MutexType> lock(m_IndexMutex);
         m_writeIdx = nextWriteIdx;
 
         if (IOStatus::EndOfFile == result) {
           m_isReadingInput = false;
         }
-
+        m_bufferAvailable.notify_one();
         return result;
       }
 
-      IOStatus operator>> (IDataSink* p_dataSink) {
+      IOStatus operator>> (std::shared_ptr<IDataSink> p_dataSink) {
         if (!p_dataSink) {
           return IOStatus::NullPointer;
         }
@@ -117,11 +127,21 @@ namespace lab {
 
         { // CRITICAL SECTION 
           // try to move 'read window'
-          const std::lock_guard<MutexType> lock(m_IndexMutex);
+          std::unique_lock<MutexType> lock(m_IndexMutex);
           if (m_writeIdx == nextReadIdx) {
             if (m_isReadingInput) {
               // nextBuffer is still writing
-              return IOStatus::NextBufferBusy;
+              //return IOStatus::NextBufferBusy;
+
+              // grab nextReadIdx to update it in the loop
+              m_bufferAvailable.wait(lock, [this, nextReadIdx] {
+                //nextReadIdx = nextIdx(m_readIdx);
+                return nextReadIdx != m_writeIdx;
+              });
+
+              if (m_writeIdx == nextReadIdx && !m_isReadingInput) {
+                return IOStatus::EndOfFile;
+              }
             }
             else {
               // reached end of the data
@@ -132,6 +152,8 @@ namespace lab {
           // continue consuming buffer
           m_readIdx = nextReadIdx;
         }
+
+        m_bufferAvailable.notify_one();
 
         // write data from pool to stream
         m_pool[m_readIdx] >> p_dataSink;

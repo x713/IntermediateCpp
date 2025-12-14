@@ -16,14 +16,14 @@ namespace lab {
     class LineBuffer {
 
 
-      static constexpr std::streamsize c_bufferSize = 16;//256;
+      static constexpr std::streamsize c_bufferSize = 16 * 1024; // 64 KB;
 
       std::array<char, c_bufferSize> m_buffer{};
 
       std::streamsize cacheBufferSize = 0;
 
     public:
-      IOStatus operator<<(IDataSource *p_dataSource) {
+      IOStatus operator<<(std::shared_ptr<IDataSource> p_dataSource) {
         if(!p_dataSource){
           return IOStatus::NullPointer;
         }
@@ -53,7 +53,7 @@ namespace lab {
         return IOStatus::Ok;
       }
 
-      void operator>>(IDataSink* p_dataSink) {
+      void operator>>(std::shared_ptr<IDataSink> p_dataSink) {
         if (!p_dataSink) {
           return;
         }

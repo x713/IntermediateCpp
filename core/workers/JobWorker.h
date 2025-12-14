@@ -51,7 +51,7 @@ namespace lab {
         Utils::LogDebug("FileJob processed");
       };
 
-      const std::string& getFilename() const{
+      const std::string& getFilename() const {
         return m_filename;
       }
 
@@ -93,20 +93,20 @@ namespace lab {
 
       void process() override {
 
-        FileDataSource fsd(getFilename());
-        if(fsd.open() != IOStatus::Ok ){
+        auto fsd = std::make_shared< FileDataSource>(getFilename());
+        if (!fsd || fsd->open() != IOStatus::Ok) {
           return;
         }
 
         // open file for reading
 
-        consume(&fsd);
+        consume(fsd);
 
         Utils::Log(" ReaderJob processed");
       }
 
 
-      void consume(FileDataSource *p_dataSource) {
+      void consume(std::shared_ptr<FileDataSource> p_dataSource) {
         bool done = false;
         while (!done) {
 
@@ -118,7 +118,6 @@ namespace lab {
           }
 
           if (IOStatus::EndOfFile == result) {
-
             done = true;
             break;
           }
@@ -131,7 +130,7 @@ namespace lab {
 
         Utils::Log(" Server have read whole file awaiting for consumer");
         m_processor->wait();
-
+        Utils::Log(" Server waiting done");
       }
     };
 
@@ -144,20 +143,20 @@ namespace lab {
         : FileJob(p_filename, p_itc_processor) {
         Utils::LogDebug(" WriterJob ctor");
       }
-      
+
       void process() override {
 
-        FileDataSink fsd(getFilename());
-        if (fsd.open() != IOStatus::Ok) {
+        auto fsd = std::make_shared<FileDataSink>(getFilename());
+        if (!fsd || fsd->open() != IOStatus::Ok) {
           return;
         }
 
-        produce(&fsd);
+        produce(fsd);
 
         Utils::Log(" WriterJob processed");
       }
 
-      void produce(FileDataSink* p_dataSink) {
+      void produce(std::shared_ptr<FileDataSink> p_dataSink) {
         bool done = false;
         while (!done) {
           IOStatus result = *m_processor >> p_dataSink;
@@ -167,7 +166,13 @@ namespace lab {
             continue;
           }
 
+          if (IOStatus::Failed == result) {
+            Utils::Log("produce Failed");
+            done = true;
+            break;
+          }
           if (IOStatus::EndOfFile == result) {
+            Utils::Log("produce EndOfFile");
             done = true;
             break;
           }

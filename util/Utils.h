@@ -29,8 +29,36 @@ namespace lab {
           std::cout << p_endl;
         }
       }
+
+      static void custom_terminate() {
+        try {
+          auto exc = std::current_exception();
+          if (exc) {
+            std::rethrow_exception(exc);
+          }
+        }
+        catch (const std::exception& e) {
+          Log("Terminate called: " + std::string(e.what()));
+        }
+        // Cleanup shared memory
+        std::abort();
+      }
+
     };
 
+    // Logging class for stack unwinding
+		// Inject object instance to log entering and leaving scope
+    class ScopeLogger {
+      std::string m_name;
+    public:
+      ScopeLogger(std::string name) : m_name(name) {
+        Utils::Log("Entering: " + m_name);
+      }
+
+      ~ScopeLogger() {
+        Utils::Log("Leaving: " + m_name);
+      }
+    };
 
   }
 }

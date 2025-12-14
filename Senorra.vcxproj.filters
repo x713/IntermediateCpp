@@ -49,6 +49,9 @@
     <Filter Include="Header Files\core\proc">
       <UniqueIdentifier>{e8291453-e356-43e0-a6fb-ed0d1a4b6bf1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\core\proc\Win">
+      <UniqueIdentifier>{38a02d06-e11a-4b4e-9658-e60ccbbe96e7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Senorra.cpp">
@@ -63,9 +66,6 @@
       <Filter>Header Files\util</Filter>
     </ClInclude>
     <ClInclude Include="shared\data\NetworkDataIO.h">
-      <Filter>Header Files\core\data</Filter>
-    </ClInclude>
-    <ClInclude Include="shared\data\FileDataIO.h">
       <Filter>Header Files\core\data</Filter>
     </ClInclude>
     <ClInclude Include="app\commands\CopyCommand.h">
@@ -107,14 +107,20 @@
     <ClInclude Include="core\proc\ThreadedDataProcessor.h">
       <Filter>Header Files\core\proc</Filter>
     </ClInclude>
-    <ClInclude Include="core\proc\WinIPCProcessor.h">
-      <Filter>Header Files\core\proc</Filter>
-    </ClInclude>
     <ClInclude Include="core\ipc\ipc_mutex.h">
       <Filter>Header Files\core\ipc</Filter>
     </ClInclude>
     <ClInclude Include="core\ipc\tests.h">
       <Filter>Header Files\core\ipc\tests</Filter>
+    </ClInclude>
+    <ClInclude Include="core\proc\win\WinIPCProcessor.h">
+      <Filter>Header Files\core\proc\Win</Filter>
+    </ClInclude>
+    <ClInclude Include="core\proc\win\Wrapper.h">
+      <Filter>Header Files\core\proc\Win</Filter>
+    </ClInclude>
+    <ClInclude Include="core\data\FileDataIO.h">
+      <Filter>Header Files\core\data</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

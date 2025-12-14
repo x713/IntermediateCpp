@@ -11,7 +11,7 @@
 
 #include "IProcessor.h"
 #include "ThreadedDataProcessor.h"
-#include "WinIPCProcessor.h"
+#include "Win/WinIPCProcessor.h"
 #include "LineBuffer.h"
 
 
@@ -58,6 +58,13 @@ namespace lab {
         auto result = std::make_shared<WinIPCProcessor<c_defaultPoolSize>>(false);
         return result;
       }
-    };
+    };   
+
+
+    /*
+    *  TODO : IEventSignalling
+    *         ISharedData (local, shared)
+    *         more Solid
+    */ 
   }
 }
