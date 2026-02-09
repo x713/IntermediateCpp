@@ -28,8 +28,8 @@ namespace lab {
         : DataSinkFilter(p_next) 
       {
         m_header.commandId = p_cmd;
-        strncpy(m_header.clientName, p_client.c_str(), sizeof(m_header.clientName) - 1);
-        strncpy(m_header.fileName, p_file.c_str(), sizeof(m_header.fileName) - 1);
+        strncpy_s(m_header.clientName, p_client.c_str(), sizeof(m_header.clientName) - 1);
+        strncpy_s(m_header.fileName, p_file.c_str(), sizeof(m_header.fileName) - 1);
       }
 
       virtual IOStatus write(const char* p_buf, size_t p_count) override {

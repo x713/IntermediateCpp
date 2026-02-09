@@ -51,7 +51,7 @@ int main(const int argc, const char* argv[])
   // Boost Datime01 examples
   const CLI_CommandSet dtSet = {
     // current debug cmd
-    {"bs00", DatimeCommand01},
+    {"bs00", NetworkFileServerCommand},
     {"dt01", DatimeCommand01}
   };
   cmdProc.AddCommandSet(dtSet);

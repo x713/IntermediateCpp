@@ -1,3 +1,5 @@
+#pragma once
+
 #include <array>
 #include <boost/asio.hpp>
 #include <iostream>

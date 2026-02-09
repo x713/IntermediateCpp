@@ -1,8 +1,13 @@
+#pragma once
+
 #include "../../core/data/NetworkDataIO.h"
 #include "../../core/data/HeaderDataIO.h"
 #include "../../core/data/CryptoDataIO.h"
 #include "../../core/proc/ProcessorFactory.h"
 #include "../../core/workers/JobWorker.h"
+
+#include <filesystem>
+#include <algorithm>
 
 using lab::data::NetworkDataSource;
 using lab::data::NetworkDataSink;
@@ -17,8 +22,8 @@ using lab::processing::ProcessorFactory;
 using lab::workers::ReaderJob;
 using lab::workers::WriterJob;
 
-#include <filesystem>
-#include <algorithm>
+
+using boost::asio::ip::tcp;
 
 namespace fs = std::filesystem;
 

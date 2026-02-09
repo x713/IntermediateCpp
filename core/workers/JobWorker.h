@@ -17,10 +17,12 @@
 namespace lab {
   namespace workers {
 
+    using lab::processing::IProcessor;
     using lab::data::IDataSource;
     using lab::data::IDataSink;
     using lab::data::FileDataSource;
     using lab::data::FileDataSink;
+    using lab::data::IOStatus;
 
     using lab::util::Utils;
 
