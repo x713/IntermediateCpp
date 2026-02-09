@@ -38,7 +38,7 @@ namespace lab {
           }
         }
         catch (const std::exception& e) {
-          Log("Terminate called: " + std::string(e.what()));
+          Log("Senorra Terminate called: " + std::string(e.what()));
         }
         // Cleanup shared memory
         std::abort();

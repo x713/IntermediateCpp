@@ -46,7 +46,7 @@ namespace lab {
 		const std::wstring& SERVER_WROTE_EVENT_NAME = L"Local\\SnTransferServerWroteEvent";
 		const std::wstring& CLIENT_READ_EVENT_NAME = L"Local\\SnTransferClientReadEvent";
 
-		// Buffer size
+		// Buffer size 64K
 		constexpr size_t c_bufferSize = 64 * 1024;
 		template<size_t BufferPool>
 		struct SharedData {

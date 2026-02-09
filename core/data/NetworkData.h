@@ -1,8 +1,12 @@
 #pragma once
 
+// Httplib
+//A C++11 single - file header - only cross platform HTTP / HTTPS library.
+//This library uses 'blocking' socket I / O.If you are looking for a library with 'non-blocking' socket I / O, this is not the one that you want.
 
 //
-// 
+
+
 //
 #include <iostream>
 #include <iosfwd>
@@ -10,29 +14,35 @@
 #include <memory>
 
 #include "../../util/Utils.h"
-#include "../buffer/IProcessor.h"
+#include "../proc/IProcessor.h"
+#include "../data/FileDataIO.h"
 
 namespace lab {
   namespace data {
 
     using lab::util::Utils;
+    using lab::data::FileDataSink;
+    //using lab::processing::IProcessor;
 
 
     class NetworkDataSink : public IDataSink {
-      std::string m_outHostname{};
+      std::string m_fileName{};
       std::shared_ptr<IProcessor> m_buffer = nullptr;
       bool m_failed = false;
 
     public:
-      NetworkDataSink(std::string p_outHostname)
-        : m_outHostname(p_outHostname)
+      NetworkDataSink(std::string p_outHostname,
+        std::string p_fileName,
+        std::string p_clientName)
+        : m_fileName(p_fileName)
       {
 
       }
 
 
       IOStatus open() {
-        
+        FileDataSink fs(m_fileName);
+
         // open file for reading
         m_ofstr = std::make_shared<std::ofstream>(m_inFilename, std::ios::binary);
         if (!m_ofstr->is_open()) {
@@ -65,6 +75,7 @@ namespace lab {
     };
 
     class NetworkDataSource : public IDataSource {
+
       std::string m_inFilename{};
       std::shared_ptr<IProcessor> m_buffer = nullptr;
       std::shared_ptr <std::ifstream> m_istrm = nullptr;
@@ -130,6 +141,45 @@ namespace lab {
       };
     };
 
+
+
+    /*
+    int main() {
+    // 1. Создаем клиент (укажите адрес вашего сервера)
+    httplib::Client cli("http://localhost:8080");
+
+    // 2. Считываем содержимое файла (или передаем поток)
+    // В данном примере мы просто указываем данные файла вручную для наглядности,
+    // но ниже я покажу, как удобно загружать их с диска.
+    
+    std::string file_content = "Это содержимое моего файла";
+
+    httplib::MultipartFormDataItems items = {
+        {
+            "file",           // Имя поля (как в HTML форме <input name="file">)
+            file_content,     // Контент файла
+            "test.txt",       // Имя файла, которое увидит сервер
+            "text/plain"      // MIME-тип
+        },
+        { "user_id", "123", "", "" } // Можно добавить и обычные текстовые поля
+    };
+
+    // 3. Отправляем POST запрос
+    if (auto res = cli.Post("/upload", items)) {
+        if (res->status == 200) {
+            std::cout << "Файл успешно отправлен!" << std::endl;
+            std::cout << "Ответ сервера: " << res->body << std::endl;
+        } else {
+            std::cerr << "Ошибка сервера: " << res->status << std::endl;
+        }
+    } else {
+        auto err = res.error();
+        std::cerr << "Ошибка подключения: " << httplib::to_string(err) << std::endl;
+    }
+
+    return 0;
+} 
+    */
 
   }
 }

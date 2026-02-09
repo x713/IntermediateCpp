@@ -52,6 +52,9 @@
     <Filter Include="Header Files\core\proc\Win">
       <UniqueIdentifier>{38a02d06-e11a-4b4e-9658-e60ccbbe96e7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\app\commands\samples">
+      <UniqueIdentifier>{2a005235-b7ca-4cb3-a70d-5cae42b06bd6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Senorra.cpp">
@@ -64,9 +67,6 @@
   <ItemGroup>
     <ClInclude Include="util\Utils.h">
       <Filter>Header Files\util</Filter>
-    </ClInclude>
-    <ClInclude Include="shared\data\NetworkDataIO.h">
-      <Filter>Header Files\core\data</Filter>
     </ClInclude>
     <ClInclude Include="app\commands\CopyCommand.h">
       <Filter>Header Files\app\commands</Filter>
@@ -121,6 +121,15 @@
     </ClInclude>
     <ClInclude Include="core\data\FileDataIO.h">
       <Filter>Header Files\core\data</Filter>
+    </ClInclude>
+    <ClInclude Include="core\data\NetworkData.h">
+      <Filter>Header Files\core\data</Filter>
+    </ClInclude>
+    <ClInclude Include="app\commands\NetwotrkFileServerCommand.h">
+      <Filter>Header Files\app\commands</Filter>
+    </ClInclude>
+    <ClInclude Include="app\commands\samples\SampleTimer.h">
+      <Filter>Header Files\app\commands\samples</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

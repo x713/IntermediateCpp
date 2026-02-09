@@ -42,7 +42,6 @@ namespace lab {
     // Add commands set to map
     void CLIProcessor::AddCommandSet(CLI_CommandSet p_pairList) {
       for (const auto& el : p_pairList) {
-
         AddCommand(el.first, el.second);
       }
     }

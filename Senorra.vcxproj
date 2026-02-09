@@ -77,6 +77,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>D:\dev\extlibs\include\x64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -92,6 +93,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>D:\dev\extlibs\include\x64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -105,6 +107,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>D:\dev\extlibs\include\x64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -120,6 +123,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>D:\dev\extlibs\include\x64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -134,12 +138,15 @@
     <ClInclude Include="app\commands\CopyCommand.h" />
     <ClInclude Include="app\commands\IPCServerCommand.h" />
     <ClInclude Include="app\commands\IPCClientCommand.h" />
+    <ClInclude Include="app\commands\NetwotrkFileServerCommand.h" />
+    <ClInclude Include="app\commands\samples\SampleTimer.h" />
     <ClInclude Include="core\cli\CLIProcessor.h" />
     <ClInclude Include="core\cli\CLIState.h" />
     <ClInclude Include="core\cli\ComTypes.h" />
     <ClInclude Include="core\cli\docs\CLIExamples.h" />
     <ClInclude Include="core\data\FileDataIO.h" />
     <ClInclude Include="core\data\IDataIO.h" />
+    <ClInclude Include="core\data\NetworkData.h" />
     <ClInclude Include="core\ipc\ipc_mutex.h" />
     <ClInclude Include="core\ipc\tests.h" />
     <ClInclude Include="core\proc\IProcessor.h" />
@@ -149,7 +156,6 @@
     <ClInclude Include="core\proc\win\WinIPCProcessor.h" />
     <ClInclude Include="core\proc\win\Wrapper.h" />
     <ClInclude Include="core\workers\JobWorker.h" />
-    <ClInclude Include="shared\data\NetworkDataIO.h" />
     <ClInclude Include="util\Utils.h" />
   </ItemGroup>
   <ItemGroup>
