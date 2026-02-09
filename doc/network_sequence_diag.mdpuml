@@ -1,0 +1,35 @@
+@startuml Network Send Sequence
+
+participant "ReaderJob\n(FileReader)" as RJ
+participant "IProcessor\n(RingBuffer)" as PROC
+participant "WriterJob\n(NetWriter)" as WJ
+participant "HeaderDataSink" as HDR
+participant "CryptoDataSink" as CRYP
+participant "NetworkDataSink" as NET
+participant "TCP Socket" as SOCK
+
+== Initialization ==
+RJ -> PROC: start process()
+WJ -> PROC: start process()
+
+== Data Flow ==
+loop until EOF
+    RJ -> RJ: read from File
+    RJ -> PROC: push data(buffer)
+    PROC -> WJ: signal data available
+    WJ -> PROC: request data
+    PROC -> WJ: pop data(buffer)
+    
+    auth -> HDR: write(buffer)
+    alt first write
+        HDR -> CRYP: write(PacketHeader)
+        CRYP -> NET: write(encrypted Header)
+        NET -> SOCK: send(bytes)
+    end
+    
+    HDR -> CRYP: write(payload buffer)
+    CRYP -> NET: write(encrypted payload)
+    NET -> SOCK: send(bytes)
+end
+
+@enduml

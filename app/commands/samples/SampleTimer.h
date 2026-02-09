@@ -95,3 +95,134 @@ CLIState::State BostTimerCommand003(CLI_Vector args)
 
   return CLIState::State::OK;
 }
+
+//
+//  Timer 4. Contextual printer
+//
+
+
+class contxtedprinter
+{
+public:
+  contxtedprinter(boost::asio::io_context& io)
+    : timer_(io, boost::asio::chrono::seconds(1)),
+    count_(0)
+  {
+    timer_.async_wait(std::bind(&contxtedprinter::print, this));
+  }
+
+  ~contxtedprinter()
+  {
+    std::cout << "Final count is " << count_ << std::endl;
+  }
+
+  void print()
+  {
+    if (count_ < 5)
+    {
+      std::cout << count_ << std::endl;
+      ++count_;
+
+      timer_.expires_at(timer_.expiry() + boost::asio::chrono::seconds(1));
+      timer_.async_wait(std::bind(&contxtedprinter::print, this));
+    }
+  }
+
+private:
+  boost::asio::steady_timer timer_;
+  int count_;
+};
+
+CLIState::State BostTimerCommand004(CLI_Vector args)
+{
+  Utils::Log("BostTimerCommand004");
+
+  boost::asio::io_context io;
+  contxtedprinter p(io);
+  io.run();
+
+  Utils::Log("BostTimerCommand004 - done");
+
+  return CLIState::State::OK;
+}
+
+//
+// 5. SyncedExecutor strand
+//
+
+
+class SyncedExecutorPrinter
+{
+public:
+  SyncedExecutorPrinter(boost::asio::io_context& io)
+    : strand_(boost::asio::make_strand(io)),
+    timer1_(io, boost::asio::chrono::seconds(1)),
+    timer2_(io, boost::asio::chrono::seconds(1)),
+    count_(0)
+  {
+    timer1_.async_wait(boost::asio::bind_executor(strand_,
+      std::bind(&SyncedExecutorPrinter::print1, this)));
+
+    timer2_.async_wait(boost::asio::bind_executor(strand_,
+      std::bind(&SyncedExecutorPrinter::print2, this)));
+  }
+
+  ~SyncedExecutorPrinter()
+  {
+    std::cout << "Final count is " << count_ << std::endl;
+  }
+
+  void print1()
+  {
+    if (count_ < 10)
+    {
+      std::cout << "Timer 1: " << count_ << std::endl;
+      ++count_;
+
+      timer1_.expires_at(timer1_.expiry() + boost::asio::chrono::seconds(1));
+
+      timer1_.async_wait(boost::asio::bind_executor(strand_,
+        std::bind(&SyncedExecutorPrinter::print1, this)));
+    }
+  }
+
+  void print2()
+  {
+    if (count_ < 10)
+    {
+      std::cout << "Timer 2: " << count_ << std::endl;
+      ++count_;
+
+      timer2_.expires_at(timer2_.expiry() + boost::asio::chrono::seconds(1));
+
+      timer2_.async_wait(boost::asio::bind_executor(strand_,
+        std::bind(&SyncedExecutorPrinter::print2, this)));
+    }
+  }
+
+private:
+  boost::asio::strand<boost::asio::io_context::executor_type> strand_;
+  boost::asio::steady_timer timer1_;
+  boost::asio::steady_timer timer2_;
+  int count_;
+};
+
+
+
+CLIState::State BostTimerCommand005(CLI_Vector args)
+{
+  Utils::Log("BostTimerCommand005");
+
+  // creating new thread allows to have io.run in parallel
+  boost::asio::io_context io;
+  SyncedExecutorPrinter p(io);
+
+  std::thread t([&] { io.run(); });
+
+  io.run();
+  t.join();
+
+  Utils::Log("BostTimerCommand005 - done");
+
+  return CLIState::State::OK;
+}

@@ -18,7 +18,7 @@ using lab::cli::CLI_Command;
 
 using lab::processing::IPCProcessorFactory;
 
-using lab::workers::FileJob;
+using lab::workers::BaseJob;
 using lab::workers::ReaderJob;
 using lab::workers::WriterJob;
 //using lab::worker::IPCServerJob;
@@ -42,8 +42,10 @@ CLIState::State SharedClientCommand(CLI_Vector args)
 
   auto ipc_buffer = IPCProcessorFactory::createClient();
 
-  WriterJob client_job{ out_filename, ipc_buffer };
-  //IPCClientJob client_job{ out_filename, ipc_buffer };
+  auto fsk = std::make_shared<lab::data::FileDataSink>(out_filename);
+  fsk->open();
+
+  WriterJob client_job{ "IPCClientWriter", fsk, ipc_buffer };
 
   client_job.process();
 

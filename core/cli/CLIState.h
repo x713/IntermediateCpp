@@ -13,7 +13,7 @@ namespace lab {
         OK = 0,
         ERR = 1,         // General Unknown Errror
         ERR_EXCEPTION = 2, // Exception when calling command
-        ERR_NOT_FOUND = 3, // Command not foiund in hashmap
+        ERR_NOT_FOUND = 3, // Command not found in hashmap
         ERR_EMPTY_COMMAND = 4, // Command name is empty
         ERR_FMT_COMMAND = 5, // Command format is wrong
         ERR_UNKN_CAST = 6, // UnknownCast

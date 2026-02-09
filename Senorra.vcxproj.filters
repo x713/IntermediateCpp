@@ -131,6 +131,9 @@
     <ClInclude Include="app\commands\samples\SampleTimer.h">
       <Filter>Header Files\app\commands\samples</Filter>
     </ClInclude>
+    <ClInclude Include="app\commands\samples\SampleNetwork.h">
+      <Filter>Header Files\app\commands\samples</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="doc\classdiag.mdpuml">

@@ -30,6 +30,17 @@ namespace lab {
         }
       }
 
+      template<class T>
+      static void LogErr(T p_str, const char p_endl = '\n') {
+        std::cerr << p_str;
+        if ('\n' == p_endl) {
+          std::cerr << std::endl;
+        }
+        else {
+          std::cerr << p_endl;
+        }
+      }
+
       static void custom_terminate() {
         try {
           auto exc = std::current_exception();

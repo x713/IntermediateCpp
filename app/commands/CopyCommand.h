@@ -17,7 +17,7 @@ using lab::cli::CLI_Command;
 
 using lab::processing::ProcessorFactory;
 
-using lab::workers::FileJob;
+using lab::workers::BaseJob;
 using lab::workers::ReaderJob;
 using lab::workers::WriterJob;
 
@@ -43,11 +43,17 @@ CLIState::State ThreadedCopyCommand(CLI_Vector args)
 
   auto thr_processor = ProcessorFactory::createThreaded();
 
-  ReaderJob reader{ in_filename, thr_processor };
-  WriterJob writer{ out_filename, thr_processor };
+  auto fsd = std::make_shared<lab::data::FileDataSource>(in_filename);
+  fsd->open();
 
-  std::thread readerThread(&FileJob::process, &reader);
-  std::thread writerThread(&FileJob::process, &writer);
+  auto fsk = std::make_shared<lab::data::FileDataSink>(out_filename);
+  fsk->open();
+
+  ReaderJob reader{ "Reader", fsd, thr_processor };
+  WriterJob writer{ "Writer", fsk, thr_processor };
+
+  std::thread readerThread(&ReaderJob::process, &reader);
+  std::thread writerThread(&WriterJob::process, &writer);
 
   readerThread.join();
   writerThread.join();
