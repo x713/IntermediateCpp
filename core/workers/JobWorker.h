@@ -17,9 +17,8 @@
 namespace lab {
   namespace workers {
 
-    using lab::data::IProcessor;
-    using lab::data::IOStatus;
-
+    using lab::data::IDataSource;
+    using lab::data::IDataSink;
     using lab::data::FileDataSource;
     using lab::data::FileDataSink;
 
@@ -27,86 +26,59 @@ namespace lab {
 
     using std::ofstream;
 
-    class FileJob {
-
-    private:
-      FileJob() = delete;
+    class BaseJob {
 
     protected:
-      std::string m_filename;
+      std::string m_jobName;
       std::shared_ptr<IProcessor> m_processor;
 
     public:
-      FileJob(const std::string& p_filename,
+      BaseJob(const std::string& p_jobName,
         const std::shared_ptr<IProcessor>& p_itc_processor) {
-        Utils::LogDebug(" FileJob ctor");
+        Utils::LogDebug(" BaseJob ctor: " + p_jobName);
 
-        m_filename = p_filename;
+        m_jobName = p_jobName;
         m_processor = p_itc_processor;
       }
 
-      virtual ~FileJob() = default;
+      virtual ~BaseJob() = default;
 
       virtual void process() {
         Utils::LogDebug("FileJob processed");
       };
 
-      const std::string& getFilename() const {
-        return m_filename;
+      const std::string& getJobName() const {
+        return m_jobName;
       }
 
     };
 
 
-
-    void makeTestData() {
-      std::string filename = "Test.b";
-
-      // prepare a file to read
-      double d = 3.14;
-      std::ofstream(filename, std::ios::binary)
-        .write(reinterpret_cast<char*>(&d), sizeof d)
-        << "opening string"
-        << 1123 << "abc"
-        << 2123 << "abc"
-        << 3123 << "abc"
-        << 4123 << "abc"
-        << 5123 << "abc"
-        << 6123 << "abc"
-        << 7123 << "abc"
-        << 8123 << "abc"
-        << 9123 << "abc"
-        << 0123 << "abc"
-        << "Long 1long 2long 3long 4long closing string";
-
-    }
-
-    class ReaderJob : public FileJob {
+    class ReaderJob : public BaseJob {
+      std::shared_ptr<IDataSource> m_source;
 
     public:
 
-      ReaderJob(const std::string& p_filename,
+      ReaderJob(const std::string& p_name,
+        const std::shared_ptr<IDataSource>& p_source,
         const std::shared_ptr<IProcessor>& p_itc_processor)
-        : FileJob(p_filename, p_itc_processor) {
+        : BaseJob(p_name, p_itc_processor), m_source(p_source) {
         Utils::LogDebug(" ReaderJob ctor");
       }
 
       void process() override {
-
-        auto fsd = std::make_shared< FileDataSource>(getFilename());
-        if (!fsd || fsd->open() != IOStatus::Ok) {
+        if (!m_source) {
+          Utils::LogErr("ReaderJob: Source is null");
           return;
         }
 
-        // open file for reading
+        consume(m_source);
 
-        consume(fsd);
-
-        Utils::Log(" ReaderJob processed");
+        Utils::Log(" ReaderJob processed: " + m_jobName);
       }
 
 
-      void consume(std::shared_ptr<FileDataSource> p_dataSource) {
+      void consume(std::shared_ptr<IDataSource> p_dataSource) {
         bool done = false;
         while (!done) {
 
@@ -128,41 +100,43 @@ namespace lab {
           }
         }
 
-        Utils::Log(" Server have read whole file awaiting for consumer");
+        Utils::Log(" Reader finished reading. Awaiting for processor to complete...");
         m_processor->wait();
-        Utils::Log(" Server waiting done");
+        Utils::Log(" Reader waiting done");
       }
     };
 
 
 
-    class WriterJob : public FileJob {
+    class WriterJob : public BaseJob {
+      std::shared_ptr<IDataSink> m_sink;
     public:
-      WriterJob(const std::string& p_filename,
+      WriterJob(const std::string& p_name,
+        const std::shared_ptr<IDataSink>& p_sink,
         const std::shared_ptr<IProcessor>& p_itc_processor)
-        : FileJob(p_filename, p_itc_processor) {
+        : BaseJob(p_name, p_itc_processor), m_sink(p_sink) {
         Utils::LogDebug(" WriterJob ctor");
       }
 
       void process() override {
-
-        auto fsd = std::make_shared<FileDataSink>(getFilename());
-        if (!fsd || fsd->open() != IOStatus::Ok) {
+        if (!m_sink) {
+          Utils::LogErr("WriterJob: Sink is null");
           return;
         }
 
-        produce(fsd);
+        produce(m_sink);
 
-        Utils::Log(" WriterJob processed");
+        Utils::Log(" WriterJob processed: " + m_jobName);
       }
 
-      void produce(std::shared_ptr<FileDataSink> p_dataSink) {
+      void produce(std::shared_ptr<IDataSink> p_dataSink) {
         bool done = false;
         while (!done) {
           IOStatus result = *m_processor >> p_dataSink;
 
           if (IOStatus::NextBufferBusy == result) {
             // TODO : wait?
+            // std::this_thread::yield();
             continue;
           }
 

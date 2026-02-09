@@ -1,0 +1,59 @@
+@startuml Network Pipeline Classes
+
+package "lab::data" {
+    interface IDataSink {
+        +write(char*, size_t) : IOStatus
+        +fail() : bool
+    }
+
+    interface IDataSource {
+        +read(char*, size_t) : IOStatus
+        +getCount() : streamsize
+        +fail() : bool
+        +eof() : bool
+    }
+
+    class DataSinkFilter {
+        #m_next : shared_ptr<IDataSink>
+    }
+
+    class DataSourceFilter {
+        #m_next : shared_ptr<IDataSource>
+    }
+
+    IDataSink <|-- DataSinkFilter
+    IDataSource <|-- DataSourceFilter
+
+    DataSinkFilter <|-- HeaderDataSink
+    DataSinkFilter <|-- CryptoDataSink
+    DataSinkFilter <|-- CompressDataSink
+
+    DataSourceFilter <|-- HeaderDataSource
+    DataSourceFilter <|-- CryptoDataSource
+    DataSourceFilter <|-- DecompressDataSource
+
+    IDataSink <|-- NetworkDataSink
+    IDataSource <|-- NetworkDataSource
+    
+    IDataSink <|-- FileDataSink
+    IDataSource <|-- FileDataSource
+}
+
+package "lab::workers" {
+    abstract class BaseJob {
+        +process()
+    }
+    class ReaderJob {
+        -m_source : shared_ptr<IDataSource>
+    }
+    class WriterJob {
+        -m_sink : shared_ptr<IDataSink>
+    }
+    BaseJob <|-- ReaderJob
+    BaseJob <|-- WriterJob
+}
+
+ReaderJob --> IDataSource : consumes
+WriterJob --> IDataSink : produces
+
+@enduml

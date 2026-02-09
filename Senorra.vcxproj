@@ -139,6 +139,7 @@
     <ClInclude Include="app\commands\IPCServerCommand.h" />
     <ClInclude Include="app\commands\IPCClientCommand.h" />
     <ClInclude Include="app\commands\NetwotrkFileServerCommand.h" />
+    <ClInclude Include="app\commands\samples\SampleNetwork.h" />
     <ClInclude Include="app\commands\samples\SampleTimer.h" />
     <ClInclude Include="core\cli\CLIProcessor.h" />
     <ClInclude Include="core\cli\CLIState.h" />
