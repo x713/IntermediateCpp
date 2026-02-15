@@ -34,7 +34,10 @@ int main(const int argc, const char* argv[])
   cmdProc.SetHelp("  multi tool"
     "\n    --cp to copy files"
     "\n    --tps to start copy server and broadcast file"
-    "\n    --tpc to start copy client and receive file");
+    "\n    --tpc to start copy client and receive file"
+    "\n    --nfs to start file server and receive files"
+    "\n    --nfc to start file client and send file"
+    );
 
   const CLI_CommandSet commandSet = {
     // single call
@@ -51,10 +54,10 @@ int main(const int argc, const char* argv[])
   // Boost Datime01 examples
   const CLI_CommandSet dtSet = {
     // current debug cmd
-    {"bs00", NetworkFileServerCommand},
+    {"bs00", NetworkFileClientCommand},
     {"dt01", DatimeCommand01}
   };
-  cmdProc.AddCommandSet(dtSet);
+  //cmdProc.AddCommandSet(dtSet);
 
   // Boost examples
   const CLI_CommandSet boostSet = {
@@ -69,7 +72,7 @@ int main(const int argc, const char* argv[])
     // Boost timer example 5
     {"bs05", BostTimerCommand005}
   };
-  cmdProc.AddCommandSet(boostSet);
+  //cmdProc.AddCommandSet(boostSet);
 
   auto result = cmdProc.Run();
 

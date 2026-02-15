@@ -9,7 +9,7 @@ namespace lab {
 
     using boost::asio::ip::tcp;
 
-    // Сетевой приемник (отправка в сокет)
+    // Network receiver (sending to socket)
     class NetworkDataSink : public IDataSink {
       std::shared_ptr<tcp::socket> m_socket;
       bool m_failed = false;
@@ -33,7 +33,7 @@ namespace lab {
       virtual bool fail() override { return m_failed; }
     };
 
-    // Сетевой источник (чтение из сокета)
+    // Network source (reading from socket)
     class NetworkDataSource : public IDataSource {
       std::shared_ptr<tcp::socket> m_socket;
       std::streamsize m_lastReadCount = 0;
